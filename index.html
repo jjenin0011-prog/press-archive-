@@ -307,7 +307,18 @@
 
         .downloadable-card-area { background: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; gap: 12px; }
         .modal-header-hero { text-align: center; }
-        .modal-avatar-wrapper { width: 84px; height: 84px; margin: 0 auto 10px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); padding: 3px; position: relative; }
+        
+        /* تعديل حجم الصورة في القائمة المنبثقة للصحفي */
+        .modal-avatar-wrapper { 
+            width: 130px; 
+            height: 130px; 
+            margin: 0 auto 12px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); 
+            padding: 3px; 
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3);
+        }
         .modal-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #0d131f; }
 
         .modal-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 14px; border: 1px solid var(--border-subtle); }
@@ -411,7 +422,7 @@
                 <div class="modal-info-grid">
                     <div class="info-box"><label>المؤسسة الإعلامية</label><span id="modalInstitution">---</span></div>
                     <div class="info-box"><label>المدينة / الموقع</label><span id="modalCity">---</span></div>
-                    <div class="info-box"><label>تاريخ التوثيق / الاعتقال</label><span id="modalDate">---</span></div>
+                    <div class="info-box" id="modalDateBox"><label>تاريخ التوثيق / الاعتقال</label><span id="modalDate">---</span></div>
                     <div class="info-box" id="modalSentenceBox"><label>الحكم القضائي</label><span id="modalSentence" style="color: #facc15;">---</span></div>
                 </div>
 
@@ -536,6 +547,11 @@
                 card.className = 'journalist-card';
                 card.onclick = () => openModal(person);
 
+                // بناء جزء التاريخ فقط إن لم يكن فئة "صحفي فلسطيني"
+                const dateHTML = (person.category !== 'palestinian' && person.date) 
+                    ? `<div><span><i class="fa-regular fa-calendar-alt"></i> ${person.date}</span></div>` 
+                    : `<div></div>`;
+
                 card.innerHTML = `
                     <div class="card-top">
                         <div class="card-header-left">
@@ -551,7 +567,7 @@
                         <span class="category-pill ${badgeClass}">${labelText}</span>
                     </div>
                     <div class="card-bottom">
-                        <div><span><i class="fa-regular fa-calendar-alt"></i> ${person.date || '---'}</span></div>
+                        ${dateHTML}
                         <div style="display:flex; gap:8px;">
                             ${isAdmin ? `<button onclick="event.stopPropagation(); openFormModal('${person.id}')" style="background:#eab308; color:#000; border:none; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">تعديل</button>` : ''}
                             <span class="read-more-link" style="color:var(--accent-cyan);">التفاصيل <i class="fa-solid fa-chevron-left"></i></span>
@@ -572,28 +588,34 @@
 
             const badgeEl = document.getElementById('modalCategoryBadge');
             const sentenceBox = document.getElementById('modalSentenceBox');
+            const dateBox = document.getElementById('modalDateBox');
             const storyTitleEl = document.getElementById('modalStoryTitle');
 
             if(person.category === 'martyr') {
                 badgeEl.className = 'category-pill pill-martyr'; 
                 badgeEl.innerText = 'شهيد صحفي';
                 sentenceBox.style.display = 'none';
+                dateBox.style.display = 'block';
                 storyTitleEl.innerText = 'التفاصيل والشهادة';
             } else if(person.category === 'imprisoned') {
                 badgeEl.className = 'category-pill pill-imprisoned'; 
                 badgeEl.innerText = 'أسير صحفي';
                 sentenceBox.style.display = 'block';
+                dateBox.style.display = 'block';
                 document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد';
                 storyTitleEl.innerText = 'التفاصيل والملف القانوني';
             } else if(person.category === 'wounded') {
                 badgeEl.className = 'category-pill pill-wounded'; 
                 badgeEl.innerText = 'جريح ومصاب';
                 sentenceBox.style.display = 'none';
+                dateBox.style.display = 'block';
                 storyTitleEl.innerText = 'التفاصيل وظروف الإصابة';
             } else {
+                // صحفي فلسطيني - إخفاء الحكم والتاريخ بالكامل
                 badgeEl.className = 'category-pill pill-palestinian'; 
                 badgeEl.innerText = 'صحفي فلسطيني';
                 sentenceBox.style.display = 'none';
+                dateBox.style.display = 'none';
                 storyTitleEl.innerText = 'التفاصيل والسيرة المهنية';
             }
 
