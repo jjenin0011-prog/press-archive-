@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أرشيف الصحفيين - توثيق الحقيقة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <title>سجل الصحفيين</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <style>
         :root {
             --bg-dark: #090d16;
             --bg-card: rgba(18, 24, 38, 0.7);
             --bg-card-hover: rgba(26, 35, 54, 0.85);
-            --border-glow: rgba(0, 102, 255, 0.25);
+            --border-glow: rgba(0, 102, 255, 0.35);
             --border-subtle: rgba(255, 255, 255, 0.08);
             
             --accent-blue: #0066ff;
@@ -20,7 +20,6 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
 
-            /* ألوان التصنيفات الهادئة */
             --red-glow: #ef4444;
             --yellow-glow: #eab308;
             --blue-glow: #3b82f6;
@@ -106,38 +105,42 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .top-icon-btn:hover {
             background: rgba(0, 102, 255, 0.15);
             color: #fff;
             border-color: var(--accent-blue);
+            transform: rotate(90deg);
         }
 
-        /* القائمة المنسدلة المحدثة */
+        /* ===== القائمة المنسدلة ===== */
         .dropdown-menu {
             position: absolute;
             top: 75px;
             left: 20px;
             background: rgba(15, 22, 35, 0.95);
             backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
             width: 290px;
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-12px) scale(0.95);
+            display: flex;
             flex-direction: column;
             box-shadow: 0 20px 40px rgba(0,0,0,0.8);
             z-index: 1000;
             overflow: hidden;
-            animation: fadeInDown 0.2s ease-out;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
         }
-
-        .dropdown-menu.show { display: flex; }
 
         .dropdown-section {
             padding: 14px 18px;
@@ -152,22 +155,6 @@
             font-weight: 700;
             text-transform: uppercase;
         }
-        
-        .email-link {
-            color: #fff;
-            background: rgba(0, 102, 255, 0.15);
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            transition: 0.2s;
-        }
-        .email-link:hover { background: var(--accent-blue); }
 
         .cities-grid {
             display: flex;
@@ -183,9 +170,14 @@
             font-size: 11px;
             color: var(--text-muted);
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
-        .city-tag:hover, .city-tag.active {
+        .city-tag:hover {
+            background: rgba(0, 102, 255, 0.2);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .city-tag.active {
             background: var(--accent-blue);
             border-color: var(--accent-blue);
             color: #fff;
@@ -221,12 +213,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: 0.3s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .search-box:focus-within {
             border-color: var(--accent-blue);
             background: rgba(0, 102, 255, 0.05);
-            box-shadow: 0 0 15px rgba(0, 102, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 102, 255, 0.2);
         }
         .search-box input {
             background: none;
@@ -257,8 +249,13 @@
             font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.25s ease;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+        }
+        .filter-btn:active { transform: scale(0.95); }
         .filter-btn.active {
             background: var(--accent-blue);
             color: #ffffff;
@@ -271,9 +268,10 @@
             font-size: 11px;
             color: var(--accent-cyan);
             font-weight: 700;
+            min-height: 22px;
         }
 
-        /* ===== مساحة المحتوى والبطاقات المحدثة ===== */
+        /* ===== البطاقات والأنيميشن ===== */
         .content-area {
             flex: 1;
             padding: 5px 20px 20px;
@@ -281,6 +279,17 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .journalist-card {
@@ -291,16 +300,18 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             cursor: pointer;
+            animation: cardFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
         }
 
         .journalist-card:hover {
             background: var(--bg-card-hover);
             border-color: var(--border-glow);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
         }
 
         .card-top {
@@ -335,7 +346,6 @@
             padding: 4px 10px;
             border-radius: 30px;
             font-weight: 700;
-            letter-spacing: 0.2px;
         }
         .pill-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
         .pill-imprisoned { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
@@ -357,20 +367,34 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            transition: transform 0.2s ease;
         }
 
-        /* ===== النافذة المنبثقة (Modal) المحدثة ===== */
+        .journalist-card:hover .read-more-link {
+            transform: translateX(-4px);
+        }
+
+        /* ===== النافذة المنبثقة (Modal) ===== */
         .modal-overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             background: rgba(5, 8, 15, 0.85);
             backdrop-filter: blur(12px);
-            display: none;
+            -webkit-backdrop-filter: blur(12px);
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 2000;
             padding: 20px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
         }
 
         .modal-content {
@@ -385,12 +409,12 @@
             gap: 16px;
             position: relative;
             box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-            animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.88) translateY(15px);
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.9) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
         }
 
         .modal-close {
@@ -403,9 +427,13 @@
             border-radius: 50%;
             display: flex; justifyContent: center; align-items: center;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
-        .modal-close:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            transform: rotate(90deg);
+        }
 
         .modal-header-hero { text-align: center; }
 
@@ -490,119 +518,127 @@
 <body>
 
     <div class="phone-mockup">
-        <!-- الهيدر العلوي -->
+        <!-- الهيدر -->
         <header>
             <div class="header-title-group">
-                <div class="logo-icon"><i class="fa-solid fa-newspaper"></i></div>
-                <h1>أرشيف <span>الصحفيين</span></h1>
+                <div class="logo-icon">
+                    <i class="fa-solid fa-newspaper"></i>
+                </div>
+                <h1>عين الحقيقة</h1>
             </div>
             <button class="top-icon-btn" id="menuBtn" onclick="toggleDropdown(event)">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
+                <i class="fa-solid fa-sliders"></i>
             </button>
 
             <!-- القائمة المنسدلة -->
             <div class="dropdown-menu" id="dropdownMenu">
                 <div class="dropdown-section">
-                    <h4>للتواصل المباشر</h4>
-                    <a href="mailto:jjenin0011@gmail.com" class="email-link">
-                        <i class="fa-regular fa-envelope"></i> jjenin0011@gmail.com
-                    </a>
-                </div>
-                <div class="dropdown-section">
-                    <h4>الفرز الجغرافي</h4>
+                    <h4>تصفية حسب المدينة</h4>
                     <div class="cities-grid">
                         <span class="city-tag active" onclick="setCityFilter('الكل', this)">الكل</span>
-                        <span class="city-tag" onclick="setCityFilter('جنين', this)">جنين</span>
-                        <span class="city-tag" onclick="setCityFilter('نابلس', this)">نابلس</span>
                         <span class="city-tag" onclick="setCityFilter('غزة', this)">غزة</span>
-                        <span class="city-tag" onclick="setCityFilter('رام الله', this)">رام الله</span>
+                        <span class="city-tag" onclick="setCityFilter('جنين', this)">جنين</span>
                         <span class="city-tag" onclick="setCityFilter('الخليل', this)">الخليل</span>
-                        <span class="city-tag" onclick="setCityFilter('طولكرم', this)">طولكرم</span>
-                        <span class="city-tag" onclick="setCityFilter('قلقيلية', this)">قلقيلية</span>
-                        <span class="city-tag" onclick="setCityFilter('سلفيت', this)">سلفيت</span>
-                        <span class="city-tag" onclick="setCityFilter('طوباس', this)">طوباس</span>
-                        <span class="city-tag" onclick="setCityFilter('بيت لحم', this)">بيت لحم</span>
-                        <span class="city-tag" onclick="setCityFilter('أريحا', this)">أريحا</span>
+                        <span class="city-tag" onclick="setCityFilter('نابلس', this)">نابلس</span>
+                        <span class="city-tag" onclick="setCityFilter('رام الله', this)">رام الله</span>
+                        <span class="city-tag" onclick="setCityFilter('القدس', this)">القدس</span>
                     </div>
-                </div>
-                <div class="dropdown-section">
-                    <h4>عن الأرشيف</h4>
-                    <p style="color: var(--text-muted); line-height: 1.5;">منصة توثيقية رقمية مستقلة لتوثيق مسيرة وسير الصحفيين والإعلاميين في فلسطين، وحفظ شهاداتهم وتضحياتهم لتبقى الحقيقة حاضرة.</p>
                 </div>
             </div>
         </header>
 
-        <!-- ترويسة المشروع -->
+        <!-- الترويسة -->
         <div class="project-intro">
-            <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> أرشيف توثيقي رقمي</span>
-            <h2>سجل التضحيات الصحفية</h2>
-            <p>انقر على أي بطاقة لقراءة السيرة والتفاصيل كاملة.</p>
+            <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> توثيق الانتهاكات</span>
+            <h2>سجل الصحفيين</h2>
+            <p>سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين.</p>
         </div>
 
         <!-- شريط البحث -->
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="renderRecords()">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي، المؤسسة، أو المدينة..." oninput="renderRecords()">
             </div>
         </div>
 
-        <!-- فلاتر التصنيفات الأساسية -->
+        <!-- الفلاتر -->
         <div class="filters-container">
-            <button class="filter-btn active" onclick="setCategoryFilter('all', this)">الكل</button>
-            <button class="filter-btn" onclick="setCategoryFilter('martyr', this)">شهداء صحفيين</button>
-            <button class="filter-btn" onclick="setCategoryFilter('imprisoned', this)">أسرى صحفيين</button>
-            <button class="filter-btn" onclick="setCategoryFilter('wounded', this)">جرحى ومصابين</button>
+            <button class="filter-btn active" onclick="setCategoryFilter('all', this)">الجميع</button>
+            <button class="filter-btn" onclick="setCategoryFilter('martyr', this)">الشهداء</button>
+            <button class="filter-btn" onclick="setCategoryFilter('imprisoned', this)">الأسرى</button>
+            <button class="filter-btn" onclick="setCategoryFilter('wounded', this)">الجرحى</button>
         </div>
 
-        <div id="activeFilterNotice" class="active-filter-indicator"></div>
+        <div class="active-filter-indicator" id="activeFilterNotice"></div>
 
-        <!-- مساحة عرض السجلات -->
+        <!-- مساحة عرض البطاقات -->
         <div class="content-area" id="recordsContainer"></div>
+    </div>
 
-        <!-- نافذة التفاصيل المنبثقة (Modal) -->
-        <div class="modal-overlay" id="detailModal" onclick="closeModalOnOutside(event)">
-            <div class="modal-content">
-                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-
-                <div class="modal-header-hero">
-                    <div class="modal-avatar-wrapper">
-                        <div class="modal-avatar-inner">
-                            <i class="fa-solid fa-user-check"></i>
-                        </div>
-                    </div>
-                    <h2 id="modalName">اسم الصحفي</h2>
-                    <span id="modalCategoryBadge" class="category-pill" style="display:inline-block; margin-top:4px;">التصنيف</span>
-                </div>
-
-                <div class="modal-info-grid">
-                    <div class="info-box">
-                        <label>المؤسسة الصحفية</label>
-                        <span id="modalInstitution">المؤسسة</span>
-                    </div>
-                    <div class="info-box">
-                        <label>المدينة / المحافظة</label>
-                        <span id="modalCity">المدينة</span>
-                    </div>
-                    <div class="info-box" style="grid-column: span 2;">
-                        <label>تاريخ التوثيق / الحدث</label>
-                        <span id="modalDate">---</span>
+    <!-- النافذة المنبثقة -->
+    <div class="modal-overlay" id="detailModal" onclick="closeModalOnOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="modal-header-hero">
+                <div class="modal-avatar-wrapper">
+                    <div class="modal-avatar-inner">
+                        <i class="fa-solid fa-user-ninja"></i>
                     </div>
                 </div>
-
-                <div class="modal-story-box">
-                    <h4><i class="fa-solid fa-align-right"></i> التفاصيل والتغطية</h4>
-                    <p id="modalDetails">التفاصيل الكاملة...</p>
+                <h2 id="modalName">---</h2>
+                <span id="modalCategoryBadge" class="category-pill">---</span>
+            </div>
+            
+            <div class="modal-info-grid">
+                <div class="info-box">
+                    <label>المؤسسة الإعلامية</label>
+                    <span id="modalInstitution">---</span>
                 </div>
+                <div class="info-box">
+                    <label>المدينة / الموقع</label>
+                    <span id="modalCity">---</span>
+                </div>
+                <div class="info-box" style="grid-column: span 2;">
+                    <label>تاريخ التوثيق / الحادثة</label>
+                    <span id="modalDate">---</span>
+                </div>
+            </div>
+
+            <div class="modal-story-box">
+                <h4><i class="fa-solid fa-file-lines"></i> التفاصيل والشهادة</h4>
+                <p id="modalDetails">---</p>
             </div>
         </div>
     </div>
 
-    <script src="journalists.js"></script>
-
+    <!-- البيانات والبرمجة -->
     <script>
+        // بيانات تجريبية (قم باستبدالها ببياناتك أو ربطها بملف البيانات الخاص بك)
+        const journalistsData = [
+            { name: "أحمد أبو حسين", category: "martyr", institution: "قناة الشعب", city: "غزة", date: "2018-04-25", details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." },
+            { name: "احمد الناعوق", category: "wounded", institution: "شبكة عين", city: "غزة", date: "2023-11-12", details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." },
+            { name: "محمد القيق", category: "imprisoned", institution: "صحفي حر", city: "رام الله", date: "2021-01-15", details: "اعتقل إدارياً لعدة أشهر بسبب نشاطه والتغطية الإعلامية." },
+            { name: "شيرين أبو عاقلة", category: "martyr", institution: "قناة الجزيرة", city: "جنين", date: "2022-05-11", details: "استشهدت برصاصة أثناء تغطيتها لاقتحام مخيم جنين." },
+            { name: "إبراهيم ملحم", category: "wounded", institution: "تلفزيون فلسطين", city: "الخليل", date: "2020-08-04", details: "أصيب بقنبلة غاز بشكل مباشر أثناء التغطية." }
+        ];
+
         let currentCategory = 'all';
         let currentCity = 'الكل';
+
+        // دالة لتوحيد أشكال الحروف العربية (إزالة الهمزات، التشكيل، والتاء المربوطة)
+        function normalizeArabicText(text) {
+            if (!text) return '';
+            return text
+                .toLowerCase()
+                .replace(/[أإآآ]/g, 'ا') // تحويل أشكال الهمزة إلى ألف عادية
+                .replace(/ة/g, 'ه')       // تحويل التاء المربوطة إلى هاء
+                .replace(/ى/g, 'ي')       // تحويل الألف المقصورة إلى ياء
+                .replace(/[\u064B-\u0652]/g, '') // إزالة التشكيل
+                .trim();
+        }
 
         function shuffleArray(array) {
             let shuffled = [...array];
@@ -616,7 +652,10 @@
         function renderRecords(customData = null) {
             const container = document.getElementById('recordsContainer');
             const searchInput = document.getElementById('searchInput');
-            const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            
+            // توحيد نص البحث المدخل من المستخدم
+            const rawSearchQuery = searchInput ? searchInput.value : '';
+            const cleanQuery = normalizeArabicText(rawSearchQuery);
             
             container.innerHTML = '';
 
@@ -628,14 +667,15 @@
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
                 const matchesCity = currentCity === 'الكل' || (item.city && item.city === currentCity);
                 
-                const name = (item.name || '').toLowerCase();
-                const institution = (item.institution || '').toLowerCase();
-                const city = (item.city || '').toLowerCase();
+                // توحيد بيانات الصحفي قبل المقارنة
+                const cleanName = normalizeArabicText(item.name);
+                const cleanInstitution = normalizeArabicText(item.institution);
+                const cleanCity = normalizeArabicText(item.city);
 
-                const matchesSearch = searchQuery === '' || 
-                    name.includes(searchQuery) || 
-                    institution.includes(searchQuery) || 
-                    city.includes(searchQuery);
+                const matchesSearch = cleanQuery === '' || 
+                    cleanName.includes(cleanQuery) || 
+                    cleanInstitution.includes(cleanQuery) || 
+                    cleanCity.includes(cleanQuery);
 
                 return matchesCategory && matchesCity && matchesSearch;
             });
@@ -645,11 +685,12 @@
             document.getElementById('activeFilterNotice').innerText = noticeText;
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px; animation: cardFadeIn 0.3s ease forwards;">لا توجد سجلات مطابقة للبحث</div>';
                 return;
             }
 
-            filtered.forEach(person => {
+            // عرض البطاقات مع التأثير الحركي المرحلي
+            filtered.forEach((person, index) => {
                 let badgeClass = '';
                 let labelText = '';
 
@@ -666,6 +707,7 @@
 
                 const card = document.createElement('div');
                 card.className = 'journalist-card';
+                card.style.animationDelay = `${index * 0.05}s`;
                 card.onclick = () => openModal(person);
                 
                 const displayCity = person.city ? person.city : 'غير محدد';
@@ -710,11 +752,11 @@
                 badgeEl.innerText = 'جريح ومصاب';
             }
 
-            document.getElementById('detailModal').style.display = 'flex';
+            document.getElementById('detailModal').classList.add('show');
         }
 
         function closeModal() {
-            document.getElementById('detailModal').style.display = 'none';
+            document.getElementById('detailModal').classList.remove('show');
         }
 
         function closeModalOnOutside(event) {
