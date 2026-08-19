@@ -4,51 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أرشيف الصحفيين - توثيق الحقيقة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-deep: #07090e;
-            --bg-card: #111622;
-            --border-subtle: #1e2638;
-            --border-highlight: #2e3a54;
+            --bg-dark: #090d16;
+            --bg-card: rgba(18, 24, 38, 0.7);
+            --bg-card-hover: rgba(26, 35, 54, 0.85);
+            --border-glow: rgba(0, 102, 255, 0.25);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            
             --accent-blue: #0066ff;
-            --accent-blue-light: #3884ff;
-            --accent-glow: rgba(0, 102, 255, 0.2);
+            --accent-cyan: #38bdf8;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+
+            /* ألوان التصنيفات الهادئة */
+            --red-glow: #ef4444;
+            --yellow-glow: #eab308;
+            --blue-glow: #3b82f6;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
 
         body {
-            background-color: var(--bg-deep);
+            background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 10px;
+            align-items: center;
+            padding: 15px;
             direction: rtl;
-            text-align: right;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 40%);
         }
 
         .phone-mockup {
             width: 100%;
-            max-width: 440px;
-            background: radial-gradient(circle at top, rgba(0, 102, 255, 0.15) 0%, rgba(7, 9, 14, 0) 70%), var(--bg-deep);
-            border-radius: 35px;
+            max-width: 430px;
+            background: rgba(13, 18, 28, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 36px;
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 102, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 102, 255, 0.08);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 850px;
+            min-height: 840px;
             position: relative;
         }
 
+        /* ===== الهيدر العلوي ===== */
         header {
-            padding: 24px 20px 15px;
+            padding: 22px 20px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -57,48 +69,72 @@
             z-index: 50;
         }
 
-        .header-title-group h1 {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--text-main);
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .header-title-group h1 span {
-            color: var(--accent-blue-light);
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+        }
+
+        .header-title-group h1 {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
         }
 
         .top-icon-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
         }
         .top-icon-btn:hover {
-            background: rgba(0, 102, 255, 0.2);
+            background: rgba(0, 102, 255, 0.15);
             color: #fff;
             border-color: var(--accent-blue);
         }
 
-        /* القائمة المنسدلة */
+        /* القائمة المنسدلة المحدثة */
         .dropdown-menu {
             position: absolute;
             top: 75px;
             left: 20px;
-            background: #121826;
-            border: 1px solid var(--border-highlight);
-            border-radius: 18px;
+            background: rgba(15, 22, 35, 0.95);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
             width: 290px;
             display: none;
             flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
             z-index: 1000;
             overflow: hidden;
+            animation: fadeInDown 0.2s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .dropdown-menu.show { display: flex; }
@@ -110,28 +146,34 @@
         }
         .dropdown-section:last-child { border-bottom: none; }
         .dropdown-section h4 {
-            color: var(--accent-blue-light);
-            margin-bottom: 6px;
-            font-size: 13px;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+            font-size: 12px;
             font-weight: 700;
+            text-transform: uppercase;
         }
         
         .email-link {
-            color: #38bdf8;
+            color: #fff;
+            background: rgba(0, 102, 255, 0.15);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 102, 255, 0.3);
             text-decoration: none;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
+            gap: 8px;
+            width: 100%;
+            transition: 0.2s;
         }
-        .email-link:hover { text-decoration: underline; color: #7dd3fc; }
+        .email-link:hover { background: var(--accent-blue); }
 
         .cities-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 5px;
+            margin-top: 4px;
         }
         .city-tag {
             background: rgba(255,255,255,0.04);
@@ -139,7 +181,7 @@
             padding: 5px 10px;
             border-radius: 8px;
             font-size: 11px;
-            color: var(--text-main);
+            color: var(--text-muted);
             cursor: pointer;
             transition: 0.2s;
         }
@@ -149,143 +191,135 @@
             color: #fff;
         }
 
+        /* ===== ترويسة الصفحة ===== */
         .project-intro { padding: 20px 20px 10px; }
         .project-tag {
-            display: inline-block;
-            background: rgba(0, 102, 255, 0.15);
-            color: #60a5fa;
-            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--accent-cyan);
+            font-size: 11px;
             padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            margin-bottom: 8px;
-            font-weight: 700;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            margin-bottom: 10px;
+            font-weight: 600;
         }
-        .project-intro h2 { font-size: 24px; font-weight: 900; color: var(--text-main); margin-bottom: 4px; }
+        .project-intro h2 { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
         .project-intro p { font-size: 12px; color: var(--text-muted); }
 
+        /* ===== شريط البحث ===== */
         .search-container { padding: 10px 20px; }
         .search-box {
             width: 100%;
-            background-color: var(--bg-card);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 12px 16px;
-            color: var(--text-main);
-            font-size: 13px;
+            color: #fff;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            transition: 0.3s;
+        }
+        .search-box:focus-within {
+            border-color: var(--accent-blue);
+            background: rgba(0, 102, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.15);
         }
         .search-box input {
             background: none;
             border: none;
-            color: var(--text-main);
+            color: #fff;
             outline: none;
             width: 100%;
             font-size: 13px;
-            text-align: right;
         }
 
+        /* ===== فلاتر التبويب ===== */
         .filters-container {
             display: flex;
             gap: 8px;
-            padding: 5px 20px 15px;
+            padding: 5px 20px 12px;
             overflow-x: auto;
             scrollbar-width: none;
         }
         .filters-container::-webkit-scrollbar { display: none; }
 
         .filter-btn {
-            background-color: var(--bg-card);
+            background: rgba(255, 255, 255, 0.03);
             color: var(--text-muted);
             border: 1px solid var(--border-subtle);
-            padding: 8px 14px;
+            padding: 8px 16px;
             border-radius: 12px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
         .filter-btn.active {
-            background-color: var(--accent-blue);
+            background: var(--accent-blue);
             color: #ffffff;
             border-color: var(--accent-blue);
-            box-shadow: 0 0 15px var(--accent-glow);
-            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.35);
         }
 
         .active-filter-indicator {
             padding: 0 20px 8px;
             font-size: 11px;
-            color: var(--accent-blue-light);
+            color: var(--accent-cyan);
             font-weight: 700;
         }
 
+        /* ===== مساحة المحتوى والبطاقات المحدثة ===== */
         .content-area {
             flex: 1;
             padding: 5px 20px 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
 
-        /* ===== التصميم الجديد والأنق للبطاقات ===== */
         .journalist-card {
-            background: linear-gradient(145deg, #131926 0%, #0d121c 100%);
+            background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 16px 18px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
-            overflow: hidden;
             cursor: pointer;
         }
 
-        .journalist-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--border-highlight);
-            transition: background 0.3s;
-        }
-
         .journalist-card:hover {
-            border-color: var(--border-highlight);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+            background: var(--bg-card-hover);
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
 
-        .journalist-card.martyr-card::before { background: #ef4444; }
-        .journalist-card.imprisoned-card::before { background: #eab308; }
-        .journalist-card.wounded-card::before { background: #0066ff; }
-
-        .card-header {
+        .card-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
         }
 
         .journalist-info h3 {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--text-main);
-            margin-bottom: 4px;
-            letter-spacing: -0.2px;
+            margin-bottom: 6px;
         }
 
         .meta-tags {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 12px;
             color: var(--text-muted);
         }
@@ -293,44 +327,45 @@
         .meta-tags span {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
-        .category-badge-small {
-            font-size: 11px;
+        .category-pill {
+            font-size: 10px;
             padding: 4px 10px;
-            border-radius: 20px;
+            border-radius: 30px;
             font-weight: 700;
+            letter-spacing: 0.2px;
         }
-        .badge-martyr { background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
-        .badge-imprisoned { background: rgba(234, 179, 8, 0.12); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.25); }
-        .badge-wounded { background: rgba(0, 102, 255, 0.12); color: #60a5fa; border: 1px solid rgba(0, 102, 255, 0.25); }
+        .pill-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .pill-imprisoned { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .pill-wounded { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
 
-        .card-footer-action {
+        .card-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 10px;
-            border-top: 1px dashed rgba(255,255,255,0.06);
-            font-size: 12px;
-            color: var(--accent-blue-light);
-            font-weight: 600;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 11px;
+            color: var(--text-muted);
         }
 
-        .card-footer-action i {
-            transition: transform 0.2s;
-        }
-        .journalist-card:hover .card-footer-action i {
-            transform: translateX(-4px);
+        .read-more-link {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        /* ===== التصميم الجديد للنافذة المنبثقة (Modal) ===== */
+        /* ===== النافذة المنبثقة (Modal) المحدثة ===== */
         .modal-overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(5, 7, 12, 0.88);
-            backdrop-filter: blur(8px);
+            background: rgba(5, 8, 15, 0.85);
+            backdrop-filter: blur(12px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -339,133 +374,115 @@
         }
 
         .modal-content {
-            background: linear-gradient(180deg, #171e2e 0%, #0f1420 100%);
-            border: 1px solid var(--border-highlight);
-            border-radius: 24px;
+            background: linear-gradient(180deg, #131a29 0%, #0b0f19 100%);
+            border: 1px solid var(--border-glow);
+            border-radius: 28px;
             width: 100%;
-            max-width: 390px;
+            max-width: 380px;
             padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 16px;
             position: relative;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.9);
-            animation: modalFadeIn 0.25s ease-out;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+            animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.9) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .modal-close {
             position: absolute;
-            top: 18px; left: 18px;
-            background: rgba(255,255,255,0.06);
+            top: 16px; left: 16px;
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
-            width: 32px; height: 32px;
+            width: 34px; height: 34px;
             border-radius: 50%;
             display: flex; justifyContent: center; align-items: center;
             cursor: pointer;
             transition: 0.2s;
-            z-index: 10;
         }
         .modal-close:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
 
-        .modal-header-hero {
-            text-align: center;
-            position: relative;
-            padding-bottom: 10px;
-        }
+        .modal-header-hero { text-align: center; }
 
         .modal-avatar-wrapper {
-            width: 86px;
-            height: 86px;
-            margin: 0 auto 12px;
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 10px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-blue), #10141d);
-            padding: 3px;
-            box-shadow: 0 8px 20px rgba(0,102,255,0.3);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            padding: 2px;
         }
 
         .modal-avatar-inner {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: #1a2232;
+            background: #0d131f;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 32px;
-            color: #60a5fa;
-            overflow: hidden;
+            font-size: 28px;
+            color: var(--accent-cyan);
         }
 
         .modal-header-hero h2 {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--text-main);
+            font-size: 19px;
+            font-weight: 800;
+            color: #fff;
             margin-bottom: 6px;
-        }
-
-        .modal-badges-row {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 4px;
         }
 
         .modal-info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: rgba(0,0,0,0.25);
+            gap: 8px;
+            background: rgba(255,255,255,0.02);
             padding: 12px;
-            border-radius: 14px;
+            border-radius: 16px;
             border: 1px solid var(--border-subtle);
-        }
-
-        .info-box {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
         }
 
         .info-box label {
             font-size: 10px;
             color: var(--text-muted);
+            display: block;
+            margin-bottom: 2px;
         }
 
         .info-box span {
             font-size: 12px;
             font-weight: 700;
-            color: var(--text-main);
+            color: #fff;
         }
 
         .modal-story-box {
-            background: rgba(0,0,0,0.25);
+            background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-subtle);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .modal-story-box h4 {
             font-size: 12px;
-            color: var(--accent-blue-light);
+            color: var(--accent-cyan);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
         .modal-story-box p {
-            font-size: 13px;
+            font-size: 12px;
             color: #cbd5e1;
             line-height: 1.7;
-            max-height: 180px;
+            max-height: 160px;
             overflow-y: auto;
         }
     </style>
@@ -476,6 +493,7 @@
         <!-- الهيدر العلوي -->
         <header>
             <div class="header-title-group">
+                <div class="logo-icon"><i class="fa-solid fa-newspaper"></i></div>
                 <h1>أرشيف <span>الصحفيين</span></h1>
             </div>
             <button class="top-icon-btn" id="menuBtn" onclick="toggleDropdown(event)">
@@ -485,13 +503,13 @@
             <!-- القائمة المنسدلة -->
             <div class="dropdown-menu" id="dropdownMenu">
                 <div class="dropdown-section">
-                    <h4>للتواصل معنا</h4>
+                    <h4>للتواصل المباشر</h4>
                     <a href="mailto:jjenin0011@gmail.com" class="email-link">
                         <i class="fa-regular fa-envelope"></i> jjenin0011@gmail.com
                     </a>
                 </div>
                 <div class="dropdown-section">
-                    <h4>فرز حسب المدينة</h4>
+                    <h4>الفرز الجغرافي</h4>
                     <div class="cities-grid">
                         <span class="city-tag active" onclick="setCityFilter('الكل', this)">الكل</span>
                         <span class="city-tag" onclick="setCityFilter('جنين', this)">جنين</span>
@@ -509,16 +527,16 @@
                 </div>
                 <div class="dropdown-section">
                     <h4>عن الأرشيف</h4>
-                    <p>منصة توثيقية رقمية مستقلة تهدف لتوثيق وتخليد مسيرة وسير الصحفيين والإعلاميين في فلسطين، وحفظ شهاداتهم وتضحياتهم لتبقى الحقيقة حاضرة.</p>
+                    <p style="color: var(--text-muted); line-height: 1.5;">منصة توثيقية رقمية مستقلة لتوثيق مسيرة وسير الصحفيين والإعلاميين في فلسطين، وحفظ شهاداتهم وتضحياتهم لتبقى الحقيقة حاضرة.</p>
                 </div>
             </div>
         </header>
 
         <!-- ترويسة المشروع -->
         <div class="project-intro">
-            <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> توثيق الحقيقة</span>
+            <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> أرشيف توثيقي رقمي</span>
             <h2>سجل التضحيات الصحفية</h2>
-            <p>«اضغط على بطاقة أي صحفي لاستعراض سيرته وحكايته.»</p>
+            <p>انقر على أي بطاقة لقراءة السيرة والتفاصيل كاملة.</p>
         </div>
 
         <!-- شريط البحث -->
@@ -542,7 +560,7 @@
         <!-- مساحة عرض السجلات -->
         <div class="content-area" id="recordsContainer"></div>
 
-        <!-- نافذة التفاصيل المنبثقة المحدثة (Modal) -->
+        <!-- نافذة التفاصيل المنبثقة (Modal) -->
         <div class="modal-overlay" id="detailModal" onclick="closeModalOnOutside(event)">
             <div class="modal-content">
                 <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -550,13 +568,11 @@
                 <div class="modal-header-hero">
                     <div class="modal-avatar-wrapper">
                         <div class="modal-avatar-inner">
-                            <i class="fa-solid fa-user-ninja"></i>
+                            <i class="fa-solid fa-user-check"></i>
                         </div>
                     </div>
                     <h2 id="modalName">اسم الصحفي</h2>
-                    <div class="modal-badges-row">
-                        <span id="modalCategoryBadge" class="category-badge-small">التصنيف</span>
-                    </div>
+                    <span id="modalCategoryBadge" class="category-pill" style="display:inline-block; margin-top:4px;">التصنيف</span>
                 </div>
 
                 <div class="modal-info-grid">
@@ -575,21 +591,19 @@
                 </div>
 
                 <div class="modal-story-box">
-                    <h4><i class="fa-solid fa-file-lines"></i> تفاصيل السيرة والتغطية</h4>
+                    <h4><i class="fa-solid fa-align-right"></i> التفاصيل والتغطية</h4>
                     <p id="modalDetails">التفاصيل الكاملة...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- استدعاء ملف البيانات الخارجي -->
     <script src="journalists.js"></script>
 
     <script>
         let currentCategory = 'all';
         let currentCity = 'الكل';
 
-        // دالة خلط المصفوفة عشوائياً عند تحديث الصفحة
         function shuffleArray(array) {
             let shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -599,7 +613,6 @@
             return shuffled;
         }
 
-        // دالة العرض الرئيسية
         function renderRecords(customData = null) {
             const container = document.getElementById('recordsContainer');
             const searchInput = document.getElementById('searchInput');
@@ -628,55 +641,50 @@
             });
 
             let noticeText = '';
-            if (currentCity !== 'الكل') noticeText += `المدينة: ${currentCity} `;
+            if (currentCity !== 'الكل') noticeText += `تصفية حسب المدينة: ${currentCity}`;
             document.getElementById('activeFilterNotice').innerText = noticeText;
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث أو الفلتر المحدد</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث</div>';
                 return;
             }
 
             filtered.forEach(person => {
                 let badgeClass = '';
                 let labelText = '';
-                let cardTypeClass = '';
 
                 if(person.category === 'martyr') { 
-                    badgeClass = 'badge-martyr'; 
+                    badgeClass = 'pill-martyr'; 
                     labelText = 'شهيد صحفي';
-                    cardTypeClass = 'martyr-card';
                 } else if(person.category === 'imprisoned') { 
-                    badgeClass = 'badge-imprisoned'; 
+                    badgeClass = 'pill-imprisoned'; 
                     labelText = 'أسير صحفي';
-                    cardTypeClass = 'imprisoned-card';
                 } else if(person.category === 'wounded') { 
-                    badgeClass = 'badge-wounded'; 
+                    badgeClass = 'pill-wounded'; 
                     labelText = 'جريح ومصاب';
-                    cardTypeClass = 'wounded-card';
                 }
 
                 const card = document.createElement('div');
-                card.className = `journalist-card ${cardTypeClass}`;
+                card.className = 'journalist-card';
                 card.onclick = () => openModal(person);
                 
                 const displayCity = person.city ? person.city : 'غير محدد';
                 const displayDate = person.date ? person.date : '---';
 
                 card.innerHTML = `
-                    <div class="card-header">
+                    <div class="card-top">
                         <div class="journalist-info">
                             <h3>${person.name}</h3>
                             <div class="meta-tags">
                                 <span><i class="fa-solid fa-building"></i> ${person.institution}</span>
-                                <span>•</span>
                                 <span><i class="fa-solid fa-location-dot"></i> ${displayCity}</span>
                             </div>
                         </div>
-                        <span class="category-badge-small ${badgeClass}">${labelText}</span>
+                        <span class="category-pill ${badgeClass}">${labelText}</span>
                     </div>
-                    <div class="card-footer-action">
-                        <span><i class="fa-regular fa-calendar"></i> ${displayDate}</span>
-                        <span>قراءة الحكاية الكاملة <i class="fa-solid fa-arrow-left"></i></span>
+                    <div class="card-bottom">
+                        <span><i class="fa-regular fa-calendar-alt"></i> ${displayDate}</span>
+                        <span class="read-more-link">التفاصيل <i class="fa-solid fa-chevron-left"></i></span>
                     </div>
                 `;
                 container.appendChild(card);
@@ -692,13 +700,13 @@
 
             const badgeEl = document.getElementById('modalCategoryBadge');
             if(person.category === 'martyr') {
-                badgeEl.className = 'category-badge-small badge-martyr';
+                badgeEl.className = 'category-pill pill-martyr';
                 badgeEl.innerText = 'شهيد صحفي';
             } else if(person.category === 'imprisoned') {
-                badgeEl.className = 'category-badge-small badge-imprisoned';
+                badgeEl.className = 'category-pill pill-imprisoned';
                 badgeEl.innerText = 'أسير صحفي';
             } else if(person.category === 'wounded') {
-                badgeEl.className = 'category-badge-small badge-wounded';
+                badgeEl.className = 'category-pill pill-wounded';
                 badgeEl.innerText = 'جريح ومصاب';
             }
 
@@ -747,7 +755,6 @@
             }
         });
 
-        // عند تحميل أو تحديث الصفحة: توليد ترتيب عشوائي للبطاقات لضمان التجديد
         window.addEventListener('DOMContentLoaded', () => {
             if (typeof journalistsData !== 'undefined' && journalistsData.length > 0) {
                 const randomizedData = shuffleArray(journalistsData);
