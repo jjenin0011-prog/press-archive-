@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سجل الصحفيين</title>
+    <title>سجل الصحفيين الفلسطينيين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -23,6 +23,7 @@
             --red-glow: #ef4444;
             --yellow-glow: #eab308;
             --blue-glow: #3b82f6;
+            --green-glow: #10b981;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -270,7 +271,7 @@
             background: rgba(255, 255, 255, 0.03);
             color: var(--text-muted);
             border: 1px solid var(--border-subtle);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 600;
@@ -374,9 +375,23 @@
             border-radius: 30px;
             font-weight: 700;
         }
+        .pill-palestinian { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
         .pill-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
         .pill-imprisoned { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
         .pill-wounded { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        .sentence-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #facc15;
+            background: rgba(234, 179, 8, 0.1);
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            margin-right: 6px;
+        }
 
         .card-bottom {
             display: flex;
@@ -562,7 +577,7 @@
                 <div class="dropdown-section">
                     <h4>عن المشروع</h4>
                     <p class="bio-text">
-                        منصة توثيقية تهدف للتوثيق الرقمي وتكريم الصحفيين، وحفظ الشهادات الميدانية للحقيقة.
+                        منصة توثيقية تهدف للتوثيق الرقمي وتكريم الصحفيين الفلسطينيين، وحفظ الشهادات الميدانية للحقيقة.
                     </p>
                     <a href="mailto:jjenin0011@gmail.com" class="email-link">
                         <i class="fa-regular fa-envelope"></i> jjenin0011@gmail.com
@@ -587,8 +602,8 @@
         <!-- الترويسة -->
         <div class="project-intro">
             <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> توثيق الانتهاكات</span>
-            <h2>سجل الصحفيين</h2>
-            <p>سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين.</p>
+            <h2>سجل الصحفيين الفلسطينيين</h2>
+            <p>سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين الفلسطينيين.</p>
         </div>
 
         <!-- شريط البحث -->
@@ -602,6 +617,7 @@
         <!-- الفلاتر -->
         <div class="filters-container">
             <button class="filter-btn active" onclick="setCategoryFilter('all', this)">الجميع</button>
+            <button class="filter-btn" onclick="setCategoryFilter('palestinian', this)">الصحفيين الفلسطينيين</button>
             <button class="filter-btn" onclick="setCategoryFilter('martyr', this)">الشهداء</button>
             <button class="filter-btn" onclick="setCategoryFilter('imprisoned', this)">الأسرى</button>
             <button class="filter-btn" onclick="setCategoryFilter('wounded', this)">الجرحى</button>
@@ -638,9 +654,13 @@
                     <label>المدينة / الموقع</label>
                     <span id="modalCity">---</span>
                 </div>
-                <div class="info-box" style="grid-column: span 2;">
-                    <label>تاريخ التوثيق / الحادثة</label>
+                <div class="info-box">
+                    <label>تاريخ التوثيق / الاعتقال</label>
                     <span id="modalDate">---</span>
+                </div>
+                <div class="info-box" id="modalSentenceBox">
+                    <label>الحكم القضائي</label>
+                    <span id="modalSentence" style="color: #facc15;">---</span>
                 </div>
             </div>
 
@@ -654,11 +674,14 @@
     <!-- البيانات والبرمجة -->
     <script>
         const journalistsData = [
-            { name: "أحمد أبو حسين", category: "martyr", institution: "قناة الشعب", city: "غزة", date: "2018-04-25", details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." },
-            { name: "احمد الناعوق", category: "wounded", institution: "شبكة عين", city: "غزة", date: "2023-11-12", details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." },
-            { name: "محمد القيق", category: "imprisoned", institution: "صحفي حر", city: "رام الله", date: "2021-01-15", details: "اعتقل إدارياً لعدة أشهر بسبب نشاطه والتغطية الإعلامية." },
-            { name: "شيرين أبو عاقلة", category: "martyr", institution: "قناة الجزيرة", city: "جنين", date: "2022-05-11", details: "استشهدت برصاصة أثناء تغطيتها لاقتحام مخيم جنين." },
-            { name: "إبراهيم ملحم", category: "wounded", institution: "تلفزيون فلسطين", city: "الخليل", date: "2020-08-04", details: "أصيب بقنبلة غاز بشكل مباشر أثناء التغطية." }
+            { name: "وائل الدحدوح", category: "palestinian", institution: "قناة الجزيرة", city: "غزة", date: "2024-01-01", sentence: "", details: "صحفي ومراسل ميداني يغطي الأحداث والتطورات في قطاع غزة." },
+            { name: "أحمد أبو حسين", category: "martyr", institution: "قناة الشعب", city: "غزة", date: "2018-04-25", sentence: "", details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." },
+            { name: "احمد الناعوق", category: "wounded", institution: "شبكة عين", city: "غزة", date: "2023-11-12", sentence: "", details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." },
+            { name: "محمد القيق", category: "imprisoned", institution: "صحفي حر", city: "رام الله", date: "2021-01-15", sentence: "إداري (6 أشهر)", details: "اعتقل إدارياً لعدة أشهر بسبب نشاطه والتغطية الإعلامية." },
+            { name: "شيرين أبو عاقلة", category: "martyr", institution: "قناة الجزيرة", city: "جنين", date: "2022-05-11", sentence: "", details: "استشهدت برصاصة أثناء تغطيتها لاقتحام مخيم جنين." },
+            { name: "كريستين ريناوي", category: "palestinian", institution: "تلفزيون فلسطين", city: "القدس", date: "2023-05-10", sentence: "", details: "صحفية ومراسلة ميدانية تنقل أحداث مدينة القدس والانتهاكات المستمرة." },
+            { name: "إبراهيم ملحم", category: "wounded", institution: "تلفزيون فلسطين", city: "الخليل", date: "2020-08-04", sentence: "", details: "أصيب بقنبلة غاز بشكل مباشر أثناء التغطية." },
+            { name: "علي السمودي", category: "imprisoned", institution: "صحيفة الأيام", city: "جنين", date: "2023-09-10", sentence: "موقوف لغاية المحاكمة", details: "تم اعتقاله أثناء مداهمة منزله في جنين." }
         ];
 
         let currentCategory = 'all';
@@ -726,7 +749,10 @@
                 let badgeClass = '';
                 let labelText = '';
 
-                if(person.category === 'martyr') { 
+                if(person.category === 'palestinian') {
+                    badgeClass = 'pill-palestinian';
+                    labelText = 'صحفي فلسطيني';
+                } else if(person.category === 'martyr') { 
                     badgeClass = 'pill-martyr'; 
                     labelText = 'شهيد صحفي';
                 } else if(person.category === 'imprisoned') { 
@@ -744,6 +770,11 @@
                 
                 const displayCity = person.city ? person.city : 'غير محدد';
                 const displayDate = person.date ? person.date : '---';
+                
+                let sentenceBadgeHtml = '';
+                if(person.category === 'imprisoned' && person.sentence) {
+                    sentenceBadgeHtml = `<span class="sentence-tag"><i class="fa-solid fa-gavel"></i> ${person.sentence}</span>`;
+                }
 
                 card.innerHTML = `
                     <div class="card-top">
@@ -757,7 +788,10 @@
                         <span class="category-pill ${badgeClass}">${labelText}</span>
                     </div>
                     <div class="card-bottom">
-                        <span><i class="fa-regular fa-calendar-alt"></i> ${displayDate}</span>
+                        <div>
+                            <span><i class="fa-regular fa-calendar-alt"></i> ${displayDate}</span>
+                            ${sentenceBadgeHtml}
+                        </div>
                         <span class="read-more-link">التفاصيل <i class="fa-solid fa-chevron-left"></i></span>
                     </div>
                 `;
@@ -773,15 +807,25 @@
             document.getElementById('modalDetails').innerText = person.details;
 
             const badgeEl = document.getElementById('modalCategoryBadge');
-            if(person.category === 'martyr') {
+            const sentenceBox = document.getElementById('modalSentenceBox');
+
+            if(person.category === 'palestinian') {
+                badgeEl.className = 'category-pill pill-palestinian';
+                badgeEl.innerText = 'صحفي فلسطيني';
+                sentenceBox.style.display = 'none';
+            } else if(person.category === 'martyr') {
                 badgeEl.className = 'category-pill pill-martyr';
                 badgeEl.innerText = 'شهيد صحفي';
+                sentenceBox.style.display = 'none';
             } else if(person.category === 'imprisoned') {
                 badgeEl.className = 'category-pill pill-imprisoned';
                 badgeEl.innerText = 'أسير صحفي';
+                sentenceBox.style.display = 'block';
+                document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد';
             } else if(person.category === 'wounded') {
                 badgeEl.className = 'category-pill pill-wounded';
                 badgeEl.innerText = 'جريح ومصاب';
+                sentenceBox.style.display = 'none';
             }
 
             document.getElementById('detailModal').classList.add('show');
