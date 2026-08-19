@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أرشيف الصحافة - توثيق الحقيقة</title>
+    <title>أرشيف الذاكرة - توثيق الحقيقة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -32,7 +32,6 @@
         .phone-mockup {
             width: 100%;
             max-width: 440px;
-            /* تأثير التوهج في الخلفية مطابق تماماً لتصميمك المفضل ولكن باللون الأزرق الصحفي */
             background: radial-gradient(circle at top, rgba(0, 85, 255, 0.12) 0%, rgba(7, 9, 14, 0) 70%), var(--bg-deep);
             border-radius: 35px;
             border: 1px solid var(--border-subtle);
@@ -44,7 +43,7 @@
             position: relative;
         }
 
-        /* الهيدر والمسافات مطابقة لتوزيع الصورة */
+        /* الهيدر العلوي */
         header {
             padding: 24px 20px 15px;
             display: flex;
@@ -62,20 +61,20 @@
             color: var(--accent-blue);
         }
 
-        .top-action-btn {
-            background: rgba(0, 85, 255, 0.1);
-            border: 1px solid rgba(0, 85, 255, 0.3);
-            color: #60a5fa;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
+        .top-icon-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 6px;
             cursor: pointer;
         }
 
-        /* ترويسة المشروع الوصفية */
+        /* ترويسة المشروع والوصف */
         .project-intro {
             padding: 20px 20px 10px;
         }
@@ -124,6 +123,7 @@
             outline: none;
             width: 100%;
             font-size: 13px;
+            text-align: right;
         }
         .search-box input::placeholder { color: #64748b; }
 
@@ -134,6 +134,7 @@
             padding: 5px 20px 15px;
             overflow-x: auto;
             scrollbar-width: none;
+            flex-direction: row-reverse;
         }
         .filters-container::-webkit-scrollbar { display: none; }
 
@@ -168,7 +169,7 @@
             gap: 14px;
         }
 
-        /* تصميم البطاقة الفاخرة المطابقة للنموذج */
+        /* تصميم البطاقة */
         .journalist-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-subtle);
@@ -214,7 +215,6 @@
             color: var(--text-muted);
         }
 
-        /* زر التفاعل السفلي داخل البطاقة تماماً كالصورة */
         .card-action-btn {
             background: rgba(0, 85, 255, 0.1);
             border: 1px solid rgba(0, 85, 255, 0.3);
@@ -322,28 +322,28 @@
 <body>
 
     <div class="phone-mockup">
-        <!-- الهيدر العلوي المماثل -->
+        <!-- الهيدر العلوي النظيف -->
         <header>
             <div class="header-title-group">
-                <h1>أرشيف <span>الصحافة</span></h1>
+                <h1>أرشيف <span>الذاكرة</span></h1>
             </div>
-            <button class="top-action-btn">
-                <i class="fa-solid fa-shield-halved"></i> درع الصحافة
+            <button class="top-icon-btn">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
         </header>
 
-        <!-- الترويسة الرئيسية والوصف -->
+        <!-- ترويسة المشروع -->
         <div class="project-intro">
             <span class="project-tag">مشروع توثيق إعلامي</span>
-            <h2>كلمتنا ليست أرقاماً</h2>
-            <p>«اضغط على بطاقة أي صحفي لقراءة حكايته الكاملة.»</p>
+            <h2>توثيق الحكايات</h2>
+            <p>«اضغط على بطاقة أي شخص لقراءة حكايته الكاملة.»</p>
         </div>
 
         <!-- شريط البحث -->
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو لقبه..." oninput="filterRecords()">
+                <input type="text" id="searchInput" placeholder="ابحث بالاسم أو اللقب..." oninput="filterRecords()">
             </div>
         </div>
 
@@ -363,10 +363,10 @@
             <div class="modal-content">
                 <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
                 <div class="modal-image-container">
-                    <img id="modalImg" src="" alt="صورة الصحفي" onerror="this.src='https://via.placeholder.com/90?text=Press'">
+                    <img id="modalImg" src="" alt="صورة الشخصية" onerror="this.src='https://via.placeholder.com/90?text=Profile'">
                 </div>
                 <div class="modal-header-info">
-                    <h2 id="modalName">اسم الصحفي</h2>
+                    <h2 id="modalName">الاسم</h2>
                     <span id="modalInstitution">المؤسسة</span>
                 </div>
                 <div class="modal-body-text" id="modalDetails">
@@ -376,7 +376,7 @@
         </div>
 
         <footer>
-            PRESS ARCHIVE SYSTEM &copy; 2026
+            ARCHIVE SYSTEM &copy; 2026
         </footer>
     </div>
 
@@ -403,7 +403,7 @@
             filtered.forEach(person => {
                 let badgeClass = '';
                 let labelText = '';
-                if(person.category === 'martyr') { badgeClass = 'badge-martyr'; labelText = 'شهيد صحفي'; }
+                if(person.category === 'martyr') { badgeClass = 'badge-martyr'; labelText = 'شهيد'; }
                 else if(person.category === 'imprisoned') { badgeClass = 'badge-imprisoned'; labelText = 'معتقل'; }
                 else if(person.category === 'wounded') { badgeClass = 'badge-wounded'; labelText = 'مصاب'; }
 
