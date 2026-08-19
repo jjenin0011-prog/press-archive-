@@ -3,173 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أرشيف الصحافة الميداني</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <title>Press Archive // سجل التوثيق الميداني</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
-            --bg-deep: #0a0c10;
-            --surface: #13161d;
+            --bg-canvas: #07090e;
+            --card-surface: #10141d;
             --press-blue: #0055ff;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
+            --border-subtle: #1e2536;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
 
         body {
-            background-color: var(--bg-deep);
+            background-color: var(--bg-canvas);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 20px 10px;
+            padding: 30px 10px;
         }
 
         .phone-mockup {
             width: 100%;
-            max-width: 440px;
-            background-color: var(--bg-deep);
-            border: 8px solid #1e293b;
-            border-radius: 30px;
+            max-width: 420px;
+            background-color: var(--bg-canvas);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
             overflow: hidden;
-            min-height: 850px;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
         }
 
-        /* هيدر احترافي */
-        .hero-section {
-            padding: 40px 20px;
-            text-align: center;
-            background: linear-gradient(180deg, #1e293b 0%, var(--bg-deep) 100%);
-            border-bottom: 3px solid var(--press-blue);
+        /* رأس المجلة العالمي (Editorial Header) */
+        .editorial-header {
+            padding: 35px 24px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: linear-gradient(180deg, #0d111a 0%, var(--bg-canvas) 100%);
         }
-        .hero-section h1 {
-            font-size: 26px;
+
+        .meta-tag {
+            font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--press-blue);
             margin-bottom: 8px;
+            font-weight: 700;
+            display: block;
         }
-        .hero-section p { color: var(--text-muted); font-size: 13px; }
 
-        /* فلاتر رسمية */
-        .filters-container {
-            padding: 20px 15px;
+        .editorial-header h1 {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .editorial-header p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* شريط الفلاتر الأنيق */
+        .filters-nav {
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            background: var(--bg-deep);
+            gap: 16px;
+            padding: 16px 24px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-subtle);
+            scrollbar-width: none;
         }
-        .filter-btn {
-            background: var(--surface);
-            border: 1px solid #334155;
-            color: #cbd5e1;
-            padding: 8px 12px;
-            border-radius: 2px;
-            font-size: 11px;
-            text-transform: uppercase;
+        .filters-nav::-webkit-scrollbar { display: none; }
+
+        .filter-tab {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
-        }
-        .filter-btn.active {
-            background: var(--press-blue);
-            color: white;
-            border-color: var(--press-blue);
+            white-space: nowrap;
+            padding-bottom: 4px;
+            position: relative;
+            transition: color 0.3s;
         }
 
-        /* بطاقات سجلات أرشيفية */
-        .content-area { padding: 10px; }
-        .journalist-card {
-            margin-bottom: 20px;
-            background: var(--surface);
-            padding: 20px;
-            border-top: 4px solid var(--press-blue);
-            border-radius: 2px;
+        .filter-tab:hover { color: var(--text-main); }
+
+        .filter-tab.active {
+            color: var(--text-main);
+            font-weight: 700;
         }
-        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
-        .journalist-info h3 { font-size: 18px; border-bottom: 1px solid #334155; padding-bottom: 5px; }
-        .status-badge {
-            font-size: 9px;
-            font-weight: bold;
-            padding: 3px 8px;
-            background: rgba(0, 85, 255, 0.1);
-            color: var(--press-blue);
-            border: 1px solid var(--press-blue);
-        }
-        .card-body { font-size: 14px; color: var(--text-muted); margin-bottom: 15px; }
-        
-        .pdf-btn {
-            background: var(--press-blue);
-            color: white;
-            border: none;
-            padding: 10px;
+
+        .filter-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            right: 0;
             width: 100%;
-            border-radius: 2px;
-            font-weight: bold;
+            height: 2px;
+            background-color: var(--press-blue);
+        }
+
+        /* مساحة العرض الرئيسية */
+        .archive-stream {
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* تصميم البطاقة كقصاصة أرشيفية (Editorial Card) */
+        .record-card {
+            background-color: var(--card-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+
+        .record-card:hover {
+            border-color: rgba(0, 85, 255, 0.4);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .identity-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .identity-info span {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* شارة الحالة بستايل هندسي نظيف */
+        .status-pill {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .pill-martyr { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .pill-imprisoned { background: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.2); }
+        .pill-wounded { background: rgba(0, 85, 255, 0.1); color: #60a5fa; border: 1px solid rgba(0, 85, 255, 0.2); }
+
+        .card-core {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-date {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* تحويل زر الـ PDF إلى أيقونة أنيقة مخفية بانسجام (Minimalist Export Icon) */
+        .export-trigger {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 13px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .export-trigger:hover {
+            color: var(--press-blue);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 10px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-subtle);
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
     <div class="phone-mockup">
-        <div class="hero-section">
-            <h1>Press Archive</h1>
-            <p>سجل توثيق الانتهاكات الميدانية</p>
+        <!-- هيدر المجلة -->
+        <div class="editorial-header">
+            <span class="meta-tag">وثائق ميدانية موثقة</span>
+            <h1>أرشيف الصحافة</h1>
+            <p>سجل رقمي مستقل لرصد انتهاكات الصحفيين</p>
         </div>
 
-        <div class="filters-container">
-            <button class="filter-btn active" onclick="filterJournalists('all', this)">الكل</button>
-            <button class="filter-btn" onclick="filterJournalists('martyr', this)">شهداء</button>
-            <button class="filter-btn" onclick="filterJournalists('imprisoned', this)">معتقلون</button>
-            <button class="filter-btn" onclick="filterJournalists('wounded', this)">مصابون</button>
-        </div>
+        <!-- فلاتر بستايل التبويب الاحترافي -->
+        <nav class="filters-nav">
+            <button class="filter-tab active" onclick="filterRecords('all', this)">الكل</button>
+            <button class="filter-tab" onclick="filterRecords('martyr', this)">الشهداء</button>
+            <button class="filter-tab" onclick="filterRecords('imprisoned', this)">المعتقلون</button>
+            <button class="filter-tab" onclick="filterRecords('wounded', this)">المصابون</button>
+        </nav>
 
-        <div class="content-area" id="journalistsContainer"></div>
+        <!-- مساحة السجلات -->
+        <div class="archive-stream" id="recordsStream"></div>
+
+        <footer>
+            PRESS ARCHIVE SYSTEM // 2026
+        </footer>
     </div>
 
     <script src="journalists.js"></script>
     <script>
-        function renderJournalists(filter = 'all') {
-            const container = document.getElementById('journalistsContainer');
-            container.innerHTML = '';
-            const filteredData = filter === 'all' ? journalistsData : journalistsData.filter(i => i.category === filter);
+        function renderRecords(filter = 'all') {
+            const stream = document.getElementById('recordsStream');
+            stream.innerHTML = '';
+            
+            const data = filter === 'all' ? journalistsData : journalistsData.filter(i => i.category === filter);
 
-            filteredData.forEach(person => {
-                const cardId = `id-${person.id}`;
+            if (data.length === 0) {
+                stream.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:30px; font-size:12px;">لا توجد سجلات في هذا القسم</div>';
+                return;
+            }
+
+            data.forEach(item => {
+                let pillClass = '';
+                let labelText = '';
+                if(item.category === 'martyr') { pillClass = 'pill-martyr'; labelText = 'شهيد'; }
+                else if(item.category === 'imprisoned') { pillClass = 'pill-imprisoned'; labelText = 'معتقل'; }
+                else if(item.category === 'wounded') { pillClass = 'pill-wounded'; labelText = 'مصاب'; }
+
+                const cardId = `record-${item.id}`;
                 const card = document.createElement('div');
-                card.className = 'journalist-card';
+                card.className = 'record-card';
                 card.id = cardId;
                 card.innerHTML = `
-                    <div class="card-header">
-                        <div class="journalist-info">
-                            <h3>${person.name}</h3>
-                            <span style="font-size:11px; color:#64748b;">${person.institution}</span>
+                    <div class="card-top">
+                        <div class="identity-info">
+                            <h3>${item.name}</h3>
+                            <span>${item.institution}</span>
                         </div>
-                        <span class="status-badge">${person.category.toUpperCase()}</span>
+                        <span class="status-pill ${pillClass}">${labelText}</span>
                     </div>
-                    <div class="card-body"><p>${person.details}</p></div>
-                    <button class="pdf-btn" onclick="exportToPDF('${cardId}', '${person.name}')">تصدير سجل PDF</button>
+                    <div class="card-core">
+                        <p>${item.details}</p>
+                    </div>
+                    <div class="card-bottom">
+                        <span class="record-date">${item.date}</span>
+                        <button class="export-trigger" onclick="generatePDF('${cardId}', '${item.name}')" title="حفظ كملف">
+                            <i class="fa-solid fa-arrow-down-long"></i> حفظ السجل
+                        </button>
+                    </div>
                 `;
-                container.appendChild(card);
+                stream.appendChild(card);
             });
         }
 
-        function filterJournalists(cat, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        function filterRecords(cat, btn) {
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
-            renderJournalists(cat);
+            renderRecords(cat);
         }
 
-        function exportToPDF(id, name) {
+        function generatePDF(id, name) {
             const el = document.getElementById(id);
-            html2pdf().from(el).set({ filename: `Press_Record_${name}.pdf` }).save();
+            const options = {
+                margin: 10,
+                filename: `Press_Archive_${name.replace(/\s+/g, '_')}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#10141d' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(el).set(options).save();
         }
 
-        window.onload = () => renderJournalists('all');
+        window.onload = () => renderRecords('all');
     </script>
 </body>
 </html>
