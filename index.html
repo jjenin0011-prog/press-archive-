@@ -244,13 +244,61 @@
         .project-intro h2 { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
         .project-intro p { font-size: 12px; color: var(--text-muted); }
 
+        /* العدادات الحية */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 5px 20px 10px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 8px 4px;
+            text-align: center;
+        }
+        .stat-card .stat-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+        }
+        .stat-card .stat-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .stat-card.martyr .stat-value { color: #f87171; }
+        .stat-card.imprisoned .stat-value { color: #facc15; }
+        .stat-card.wounded .stat-value { color: #60a5fa; }
+
         .search-container { padding: 10px 20px; }
+        .search-row {
+            display: flex;
+            gap: 8px;
+        }
         .search-box {
-            width: 100%; background: rgba(255, 255, 255, 0.03);
+            flex: 1; background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle); border-radius: 16px;
-            padding: 12px 16px; color: #fff; display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; color: #fff; display: flex; align-items: center; gap: 10px;
         }
         .search-box input { background: none; border: none; color: #fff; outline: none; width: 100%; font-size: 13px; }
+
+        .year-select-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 0 10px;
+            color: var(--accent-cyan);
+            font-weight: bold;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+        .year-select-box option {
+            background: #0d131f;
+            color: #fff;
+        }
 
         .filters-container { display: flex; gap: 8px; padding: 5px 20px 12px; overflow-x: auto; scrollbar-width: none; }
         .filters-container::-webkit-scrollbar { display: none; }
@@ -308,7 +356,6 @@
         .downloadable-card-area { background: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; gap: 12px; }
         .modal-header-hero { text-align: center; }
         
-        /* تعديل حجم الصورة في القائمة المنبثقة للصحفي */
         .modal-avatar-wrapper { 
             width: 130px; 
             height: 130px; 
@@ -388,10 +435,34 @@
             <p>سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين الفلسطينيين.</p>
         </div>
 
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">المجموع</div>
+            </div>
+            <div class="stat-card martyr">
+                <div class="stat-value" id="statMartyrs">0</div>
+                <div class="stat-label">شهداء</div>
+            </div>
+            <div class="stat-card imprisoned">
+                <div class="stat-value" id="statImprisoned">0</div>
+                <div class="stat-label">أسرى</div>
+            </div>
+            <div class="stat-card wounded">
+                <div class="stat-value" id="statWounded">0</div>
+                <div class="stat-label">جرحى</div>
+            </div>
+        </div>
+
         <div class="search-container">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي، المؤسسة..." oninput="renderRecords()">
+            <div class="search-row">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                    <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي، المؤسسة..." oninput="renderRecords()">
+                </div>
+                <select id="yearSelect" class="year-select-box" onchange="renderRecords()">
+                    <option value="all">كل الأعوام</option>
+                </select>
             </div>
         </div>
 
@@ -455,7 +526,7 @@
             </select>
             <input type="text" id="inputInstitution" placeholder="المؤسسة الإعلامية">
             <input type="text" id="inputCity" placeholder="المدينة (مثال: غزة، جنين)">
-            <input type="text" id="inputDate" placeholder="التاريخ">
+            <input type="text" id="inputDate" placeholder="التاريخ (مثال: 2023-10-15)">
             <input type="text" id="inputSentence" placeholder="الحكم (إن وجد للأسرى)">
             <textarea id="inputDetails" placeholder="التفاصيل والمعلومات"></textarea>
             
@@ -485,6 +556,19 @@
         let currentCategory = 'all';
         let currentCity = 'الكل';
 
+        // تعبئة السنوات من 2000 حتى العام الحالي تلقائياً
+        function initYearsDropdown() {
+            const yearSelect = document.getElementById('yearSelect');
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= 2000; year--) {
+                const option = document.createElement('option');
+                option.value = year.toString();
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        }
+        initYearsDropdown();
+
         function triggerAdminLogin() {
             if (isAdmin) return;
             const pass = prompt("أدخل كلمة المرور لتفعيل وضع الأدمن:");
@@ -504,8 +588,27 @@
             snapshot.forEach((doc) => {
                 journalistsData.push({ id: doc.id, ...doc.data() });
             });
+            updateStats();
             renderRecords();
         });
+
+        function updateStats() {
+            let total = journalistsData.length;
+            let martyrs = 0;
+            let imprisoned = 0;
+            let wounded = 0;
+
+            journalistsData.forEach(item => {
+                if(item.category === 'martyr') martyrs++;
+                else if(item.category === 'imprisoned') imprisoned++;
+                else if(item.category === 'wounded') wounded++;
+            });
+
+            document.getElementById('statTotal').innerText = total;
+            document.getElementById('statMartyrs').innerText = martyrs;
+            document.getElementById('statImprisoned').innerText = imprisoned;
+            document.getElementById('statWounded').innerText = wounded;
+        }
 
         function normalizeArabicText(text) {
             if (!text) return '';
@@ -515,6 +618,7 @@
         function renderRecords() {
             const container = document.getElementById('recordsContainer');
             const searchInput = document.getElementById('searchInput');
+            const selectedYear = document.getElementById('yearSelect').value;
             const cleanQuery = normalizeArabicText(searchInput ? searchInput.value : '');
             
             container.innerHTML = '';
@@ -527,7 +631,13 @@
                     normalizeArabicText(item.institution).includes(cleanQuery) || 
                     normalizeArabicText(item.city).includes(cleanQuery);
 
-                return matchesCategory && matchesCity && matchesSearch;
+                // البحث والتصفية حسب العام
+                let matchesYear = true;
+                if (selectedYear !== 'all') {
+                    matchesYear = item.date && item.date.includes(selectedYear);
+                }
+
+                return matchesCategory && matchesCity && matchesSearch && matchesYear;
             });
 
             if (filtered.length === 0) {
@@ -547,7 +657,6 @@
                 card.className = 'journalist-card';
                 card.onclick = () => openModal(person);
 
-                // بناء جزء التاريخ فقط إن لم يكن فئة "صحفي فلسطيني"
                 const dateHTML = (person.category !== 'palestinian' && person.date) 
                     ? `<div><span><i class="fa-regular fa-calendar-alt"></i> ${person.date}</span></div>` 
                     : `<div></div>`;
@@ -611,7 +720,6 @@
                 dateBox.style.display = 'block';
                 storyTitleEl.innerText = 'التفاصيل وظروف الإصابة';
             } else {
-                // صحفي فلسطيني - إخفاء الحكم والتاريخ بالكامل
                 badgeEl.className = 'category-pill pill-palestinian'; 
                 badgeEl.innerText = 'صحفي فلسطيني';
                 sentenceBox.style.display = 'none';
