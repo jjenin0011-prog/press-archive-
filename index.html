@@ -416,7 +416,7 @@
                 </div>
 
                 <div class="modal-story-box">
-                    <h4><i class="fa-solid fa-file-lines"></i> التفاصيل والشهادة</h4>
+                    <h4><i class="fa-solid fa-file-lines"></i> <span id="modalStoryTitle">التفاصيل والمعلومات</span></h4>
                     <p id="modalDetails">---</p>
                 </div>
 
@@ -572,20 +572,29 @@
 
             const badgeEl = document.getElementById('modalCategoryBadge');
             const sentenceBox = document.getElementById('modalSentenceBox');
+            const storyTitleEl = document.getElementById('modalStoryTitle');
 
             if(person.category === 'martyr') {
-                badgeEl.className = 'category-pill pill-martyr'; badgeEl.innerText = 'شهيد صحفي';
+                badgeEl.className = 'category-pill pill-martyr'; 
+                badgeEl.innerText = 'شهيد صحفي';
                 sentenceBox.style.display = 'none';
+                storyTitleEl.innerText = 'التفاصيل والشهادة';
             } else if(person.category === 'imprisoned') {
-                badgeEl.className = 'category-pill pill-imprisoned'; badgeEl.innerText = 'أسير صحفي';
+                badgeEl.className = 'category-pill pill-imprisoned'; 
+                badgeEl.innerText = 'أسير صحفي';
                 sentenceBox.style.display = 'block';
                 document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد';
+                storyTitleEl.innerText = 'التفاصيل والملف القانوني';
             } else if(person.category === 'wounded') {
-                badgeEl.className = 'category-pill pill-wounded'; badgeEl.innerText = 'جريح ومصاب';
+                badgeEl.className = 'category-pill pill-wounded'; 
+                badgeEl.innerText = 'جريح ومصاب';
                 sentenceBox.style.display = 'none';
+                storyTitleEl.innerText = 'التفاصيل وظروف الإصابة';
             } else {
-                badgeEl.className = 'category-pill pill-palestinian'; badgeEl.innerText = 'صحفي فلسطيني';
+                badgeEl.className = 'category-pill pill-palestinian'; 
+                badgeEl.innerText = 'صحفي فلسطيني';
                 sentenceBox.style.display = 'none';
+                storyTitleEl.innerText = 'التفاصيل والسيرة المهنية';
             }
 
             document.getElementById('detailModal').classList.add('show');
