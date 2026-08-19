@@ -435,7 +435,7 @@
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="handleSearch()">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="renderRecords()">
             </div>
         </div>
 
@@ -471,45 +471,43 @@
         </div>
     </div>
 
-    <!-- قاعدة البيانات التجريبية أو الخارجية -->
+    <!-- استدعاء قاعدة البيانات المكتوبة في ملف journalists.js -->
     <script src="journalists.js"></script>
+
     <script>
         let currentCategory = 'all';
         let currentCity = 'الكل';
 
-        // بيانات افتراضية شاملة تضمن ظهور نتائج وبطاقات عشوائية دائماً
-        if (typeof journalistsData === 'undefined') {
-            var journalistsData = [
-                { name: "شيرين أبو عاقلة", city: "جنين", institution: "قناة الجزيرة", category: "martyr", details: "صوت فلسطين الأبرز، استشهدت في مخيم جنين أثناء تغطيتها لاقتحام قوات الاحتلال.", image: "" },
-                { name: "أحمد أبو حسين", city: "غزة", institution: "وكالة إعلامية", category: "martyr", details: "صحفي ميداني وثق العدوان بكل شجاعة حتى ارتقى شهيداً في سبيل نقل الحقيقة.", image: "" },
-                { name: "معاذ عمارنة", city: "الخليل", institution: "مصور صحفي", category: "wounded", details: "فقد إحدى عينيه برصاص الاحتلال أثناء عمله الصحفي في محافظة الخليل.", image: "" },
-                { name: "بلال الطويل", city: "نابلس", institution: "شبكة قدس", category: "imprisoned", details: "صحفي معتقل إدارياً في سجون الاحتلال بسبب تغطياته ونشاطه الإعلامي.", image: "" },
-                { name: "إبراهيم تعامرة", city: "بيت لحم", institution: "إعلام حر", category: "wounded", details: "أصيب برصاص غادر أثناء تغطيته للمواجهات.", image: "" },
-                { name: "محمد البريم", city: "غزة", institution: "إذاعة القدس", category: "martyr", details: "استشهد إثر استهداف طائرات الاحتلال.", image: "" },
-                { name: "نضال اشتية", city: "نابلس", institution: "مصور صحفي", category: "wounded", details: "أصيب عدة مرات أثناء تغطيته للمسيرات السلمية في كفر قدوم وبلاطة.", image: "" },
-                { name: "عاصم الشنبلي", city: "رام الله", institution: "تلفزيون فلسطين", category: "imprisoned", details: "اعتقل لفترات طويلة بسبب عمله الصحفي الميداني.", image: "" }
-            ];
-        }
-
-        // دالة عرض البطاقات بناءً على الفلاتر والبحث
-        function renderRecords(dataToRender = null) {
+        // دالة العرض الرئيسية المتوافقة مع هيكلة بيانات journalists.js
+        function renderRecords() {
             const container = document.getElementById('recordsContainer');
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            const searchInput = document.getElementById('searchInput');
+            const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            
             container.innerHTML = '';
 
-            let list = dataToRender || journalistsData;
+            // التأكد من تحميل المصفوفة مع حماية من الأخطاء في البيانات
+            let list = (typeof journalistsData !== 'undefined') ? journalistsData : [];
 
             let filtered = list.filter(item => {
+                if (!item) return false;
+
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
-                const matchesCity = currentCity === 'الكل' || item.city === currentCity;
+                const matchesCity = currentCity === 'الكل' || (item.city && item.city === currentCity);
+                
+                const name = (item.name || '').toLowerCase();
+                const institution = (item.institution || '').toLowerCase();
+                const city = (item.city || '').toLowerCase();
+
                 const matchesSearch = searchQuery === '' || 
-                    item.name.toLowerCase().includes(searchQuery) || 
-                    item.institution.toLowerCase().includes(searchQuery) || 
-                    item.city.toLowerCase().includes(searchQuery);
+                    name.includes(searchQuery) || 
+                    institution.includes(searchQuery) || 
+                    city.includes(searchQuery);
+
                 return matchesCategory && matchesCity && matchesSearch;
             });
 
-            // عرض تنبيه بالفلتر النشط إن وجد
+            // تحديث الإشعار المكتوب فوق البطاقات
             let noticeText = '';
             if (currentCity !== 'الكل') noticeText += `المدينة: ${currentCity} `;
             document.getElementById('activeFilterNotice').innerText = noticeText;
@@ -530,11 +528,13 @@
                 card.className = 'journalist-card';
                 card.onclick = () => openModal(person);
                 
+                const displayCity = person.city ? ` - ${person.city}` : '';
+                
                 card.innerHTML = `
                     <div class="card-top-row">
                         <div class="journalist-info">
                             <h3>${person.name}</h3>
-                            <span>${person.institution} - ${person.city}</span>
+                            <span>${person.institution}${displayCity}</span>
                         </div>
                         <span class="category-badge-small ${badgeClass}">${labelText}</span>
                     </div>
@@ -546,28 +546,12 @@
             });
         }
 
-        // دالة جلب بطاقات عشوائية عند فتح أو تحديث الصفحة
-        function loadRandomJournalists() {
-            // خلط المصفوفة عشوائياً واختيار أول 4 عناصر لضمان التجديد عند كل تحديث
-            let shuffled = [...journalistsData].sort(() => 0.5 - Math.random());
-            renderRecords(shuffled);
-        }
-
-        function handleSearch() {
-            const searchQuery = document.getElementById('searchInput').value.trim();
-            if (searchQuery === '') {
-                loadRandomJournalists(); // إذا فرغ البحث، يعيد عرض عشوائي جديد
-            } else {
-                renderRecords(); // يعرض نتائج البحث مباشرة
-            }
-        }
-
         function openModal(person) {
             document.getElementById('modalName').innerText = person.name;
-            document.getElementById('modalCity').innerText = `مدينة ${person.city}`;
+            document.getElementById('modalCity').innerText = person.city ? `مدينة ${person.city}` : '';
             document.getElementById('modalInstitution').innerText = person.institution;
             document.getElementById('modalDetails').innerText = person.details;
-            document.getElementById('modalImg').src = person.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150';
+            document.getElementById('modalImg').src = person.image || 'https://via.placeholder.com/90?text=Press';
             document.getElementById('detailModal').style.display = 'flex';
         }
 
@@ -584,38 +568,43 @@
         function setCategoryFilter(cat, btn) {
             currentCategory = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            if (btn) btn.classList.add('active');
             renderRecords();
         }
 
         function setCityFilter(city, el) {
             currentCity = city;
             document.querySelectorAll('.city-tag').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('dropdownMenu').classList.remove('show');
+            if (el) el.classList.add('active');
+            const menu = document.getElementById('dropdownMenu');
+            if (menu) menu.classList.remove('show');
             renderRecords();
         }
 
-        // تحكم دقيق بفتح وإغلاق قائمة الثلاث نقاط
+        // التحكم بفتح وإغلاق القائمة المنسدلة للثلاث نقاط
         function toggleDropdown(event) {
-            event.stopPropagation();
+            if (event) event.stopPropagation();
             const menu = document.getElementById('dropdownMenu');
-            menu.classList.toggle('show');
-        }
-
-        // إغلاق القائمة عند الضغط في أي مكان خارجها
-        window.onclick = function(event) {
-            const menu = document.getElementById('dropdownMenu');
-            const menuBtn = document.getElementById('menuBtn');
-            if (!menu.contains(event.target) && event.target !== menuBtn && !menuBtn.contains(event.target)) {
-                menu.classList.remove('show');
+            if (menu) {
+                menu.classList.toggle('show');
             }
         }
 
-        // تشغيل توليد البطاقات العشوائية فور تحميل الصفحة أو تحديثها
-        window.onload = () => {
-            loadRandomJournalists();
-        };
+        // إغلاق القائمة عند الضغط خارجها
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('dropdownMenu');
+            const menuBtn = document.getElementById('menuBtn');
+            if (menu && menu.classList.contains('show')) {
+                if (!menu.contains(event.target) && !menuBtn.contains(event.target)) {
+                    menu.classList.remove('show');
+                }
+            }
+        });
+
+        // تشغيل التطبيق بعد اكتمال التحميل
+        window.addEventListener('DOMContentLoaded', () => {
+            renderRecords();
+        });
     </script>
 </body>
 </html>
