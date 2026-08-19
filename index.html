@@ -78,43 +78,72 @@
         }
 
         header {
-            padding: 24px 20px 20px;
-            margin-bottom: 10px;
+            padding: 22px 20px;
+            margin-bottom: 5px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-subtle);
             position: relative;
             z-index: 50;
+            background: rgba(255, 255, 255, 0.01);
         }
 
         .header-title-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
+        /* تحسين الشعار البصري واستخدامه كالضغطة السرية للأدمن */
         .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-            border-radius: 10px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(56, 189, 248, 0.2));
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #fff;
-            font-size: 16px;
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+            color: var(--accent-cyan);
+            font-size: 18px;
+            box-shadow: 0 0 15px rgba(0, 102, 255, 0.25);
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
-        .logo-icon:hover { transform: scale(1.05); }
+        .logo-icon:hover {
+            transform: scale(1.06);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 22px rgba(56, 189, 248, 0.4);
+            color: #fff;
+        }
+
+        /* تحسين مظهر كلمة عين الحقيقة */
+        .brand-title-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
 
         .header-title-group h1 {
-            font-size: 19px;
-            font-weight: 800;
-            color: var(--text-main);
-            letter-spacing: -0.3px;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: -0.2px;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-subtitle {
+            font-size: 9px;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: -1px;
         }
 
         .admin-badge {
@@ -241,8 +270,7 @@
         .grid-tag.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
 
         .project-intro { 
-            padding: 15px 20px 10px; 
-            margin-top: 5px;
+            padding: 20px 20px 10px; 
         }
         .project-tag {
             display: inline-flex; align-items: center; gap: 6px;
@@ -434,9 +462,12 @@
         <header>
             <div class="header-title-group">
                 <div class="logo-icon" onclick="triggerAdminLogin()" title="وضع الإدارة">
-                    <i class="fa-solid fa-newspaper"></i>
+                    <i class="fa-solid fa-eye"></i>
                 </div>
-                <h1>عين الحقيقة</h1>
+                <div class="brand-title-wrapper">
+                    <h1>عين الحقيقة</h1>
+                    <span class="brand-subtitle">VERITAS EYE</span>
+                </div>
                 <span class="admin-badge" id="adminBadge">Admin</span>
             </div>
             <button class="top-icon-btn" id="menuBtn" onclick="toggleDropdown(event)">
@@ -618,6 +649,7 @@
         }
         initYearsFilter();
 
+        // الضغطة السرية عند النقر على الأيقونة الشعار
         function triggerAdminLogin() {
             if (isAdmin) return;
             const pass = prompt("أدخل كلمة المرور لتفعيل وضع الأدمن:");
