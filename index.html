@@ -53,6 +53,7 @@
             align-items: center;
             border-bottom: 1px solid var(--border-subtle);
             position: relative;
+            z-index: 50;
         }
 
         .header-title-group h1 {
@@ -80,17 +81,21 @@
         /* القائمة المنسدلة للثلاث نقاط (جهة اليسار) */
         .dropdown-menu {
             position: absolute;
-            top: 70px;
+            top: 75px;
             left: 20px;
-            background: var(--bg-card);
+            background: #131824;
             border: 1px solid var(--border-subtle);
             border-radius: 14px;
             width: 280px;
             display: none;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            z-index: 200;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            z-index: 1000;
             overflow: hidden;
+        }
+
+        .dropdown-menu.show {
+            display: flex;
         }
 
         .dropdown-section {
@@ -151,7 +156,6 @@
             font-weight: 900;
             color: var(--text-main);
             margin-bottom: 4px;
-            letter-spacing: -0.5px;
         }
         .project-intro p {
             font-size: 12px;
@@ -185,7 +189,7 @@
         }
         .search-box input::placeholder { color: #64748b; }
 
-        /* شريط الفلاتر تحت البحث */
+        /* فلاتر التصنيفات تحت البحث */
         .filters-container {
             display: flex;
             gap: 8px;
@@ -217,6 +221,13 @@
             font-weight: 700;
         }
 
+        .active-filter-indicator {
+            padding: 0 20px 8px;
+            font-size: 11px;
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
         /* منطقة البطاقات */
         .content-area {
             flex: 1;
@@ -238,7 +249,6 @@
             gap: 12px;
             transition: all 0.3s ease;
             cursor: pointer;
-            position: relative;
         }
 
         .journalist-card:hover {
@@ -306,7 +316,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 2000;
             padding: 20px;
         }
 
@@ -370,13 +380,6 @@
             max-height: 200px;
             overflow-y: auto;
         }
-
-        .active-filter-indicator {
-            padding: 0 20px 8px;
-            font-size: 11px;
-            color: var(--accent-blue);
-            font-weight: 700;
-        }
     </style>
 </head>
 <body>
@@ -387,7 +390,7 @@
             <div class="header-title-group">
                 <h1>أرشيف <span>الصحفيين</span></h1>
             </div>
-            <button class="top-icon-btn" onclick="toggleDropdown()">
+            <button class="top-icon-btn" id="menuBtn" onclick="toggleDropdown(event)">
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
 
@@ -432,7 +435,7 @@
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="renderRecords()">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="handleSearch()">
             </div>
         </div>
 
@@ -468,12 +471,13 @@
         </div>
     </div>
 
-    <!-- ملف البيانات المتوقع وجوده أو البيانات الافتراضية -->
+    <!-- قاعدة البيانات التجريبية أو الخارجية -->
     <script src="journalists.js"></script>
     <script>
         let currentCategory = 'all';
         let currentCity = 'الكل';
 
+        // بيانات افتراضية شاملة تضمن ظهور نتائج وبطاقات عشوائية دائماً
         if (typeof journalistsData === 'undefined') {
             var journalistsData = [
                 { name: "شيرين أبو عاقلة", city: "جنين", institution: "قناة الجزيرة", category: "martyr", details: "صوت فلسطين الأبرز، استشهدت في مخيم جنين أثناء تغطيتها لاقتحام قوات الاحتلال.", image: "" },
@@ -481,23 +485,31 @@
                 { name: "معاذ عمارنة", city: "الخليل", institution: "مصور صحفي", category: "wounded", details: "فقد إحدى عينيه برصاص الاحتلال أثناء عمله الصحفي في محافظة الخليل.", image: "" },
                 { name: "بلال الطويل", city: "نابلس", institution: "شبكة قدس", category: "imprisoned", details: "صحفي معتقل إدارياً في سجون الاحتلال بسبب تغطياته ونشاطه الإعلامي.", image: "" },
                 { name: "إبراهيم تعامرة", city: "بيت لحم", institution: "إعلام حر", category: "wounded", details: "أصيب برصاص غادر أثناء تغطيته للمواجهات.", image: "" },
-                { name: "محمد البريم", city: "غزة", institution: "إذاعة القدس", category: "martyr", details: "استشهد إثر ق استهداف طائرات الاحتلال.", image: "" }
+                { name: "محمد البريم", city: "غزة", institution: "إذاعة القدس", category: "martyr", details: "استشهد إثر استهداف طائرات الاحتلال.", image: "" },
+                { name: "نضال اشتية", city: "نابلس", institution: "مصور صحفي", category: "wounded", details: "أصيب عدة مرات أثناء تغطيته للمسيرات السلمية في كفر قدوم وبلاطة.", image: "" },
+                { name: "عاصم الشنبلي", city: "رام الله", institution: "تلفزيون فلسطين", category: "imprisoned", details: "اعتقل لفترات طويلة بسبب عمله الصحفي الميداني.", image: "" }
             ];
         }
 
-        function renderRecords() {
+        // دالة عرض البطاقات بناءً على الفلاتر والبحث
+        function renderRecords(dataToRender = null) {
             const container = document.getElementById('recordsContainer');
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
             container.innerHTML = '';
 
-            let filtered = journalistsData.filter(item => {
+            let list = dataToRender || journalistsData;
+
+            let filtered = list.filter(item => {
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
                 const matchesCity = currentCity === 'الكل' || item.city === currentCity;
-                const matchesSearch = item.name.toLowerCase().includes(searchQuery) || item.institution.toLowerCase().includes(searchQuery) || item.city.toLowerCase().includes(searchQuery);
+                const matchesSearch = searchQuery === '' || 
+                    item.name.toLowerCase().includes(searchQuery) || 
+                    item.institution.toLowerCase().includes(searchQuery) || 
+                    item.city.toLowerCase().includes(searchQuery);
                 return matchesCategory && matchesCity && matchesSearch;
             });
 
-            // تحديث النص التوضيحي للفلترة النشطة
+            // عرض تنبيه بالفلتر النشط إن وجد
             let noticeText = '';
             if (currentCity !== 'الكل') noticeText += `المدينة: ${currentCity} `;
             document.getElementById('activeFilterNotice').innerText = noticeText;
@@ -534,6 +546,22 @@
             });
         }
 
+        // دالة جلب بطاقات عشوائية عند فتح أو تحديث الصفحة
+        function loadRandomJournalists() {
+            // خلط المصفوفة عشوائياً واختيار أول 4 عناصر لضمان التجديد عند كل تحديث
+            let shuffled = [...journalistsData].sort(() => 0.5 - Math.random());
+            renderRecords(shuffled);
+        }
+
+        function handleSearch() {
+            const searchQuery = document.getElementById('searchInput').value.trim();
+            if (searchQuery === '') {
+                loadRandomJournalists(); // إذا فرغ البحث، يعيد عرض عشوائي جديد
+            } else {
+                renderRecords(); // يعرض نتائج البحث مباشرة
+            }
+        }
+
         function openModal(person) {
             document.getElementById('modalName').innerText = person.name;
             document.getElementById('modalCity').innerText = `مدينة ${person.city}`;
@@ -564,18 +592,29 @@
             currentCity = city;
             document.querySelectorAll('.city-tag').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            toggleDropdown(); // إغلاق القائمة بعد الاختيار
+            document.getElementById('dropdownMenu').classList.remove('show');
             renderRecords();
         }
 
-        function toggleDropdown() {
+        // تحكم دقيق بفتح وإغلاق قائمة الثلاث نقاط
+        function toggleDropdown(event) {
+            event.stopPropagation();
             const menu = document.getElementById('dropdownMenu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+            menu.classList.toggle('show');
         }
 
-        // عند تحديث الصفحة تظهر بطاقة عشوائية أو قائمة عشوائية مميزة
+        // إغلاق القائمة عند الضغط في أي مكان خارجها
+        window.onclick = function(event) {
+            const menu = document.getElementById('dropdownMenu');
+            const menuBtn = document.getElementById('menuBtn');
+            if (!menu.contains(event.target) && event.target !== menuBtn && !menuBtn.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        }
+
+        // تشغيل توليد البطاقات العشوائية فور تحميل الصفحة أو تحديثها
         window.onload = () => {
-            renderRecords();
+            loadRandomJournalists();
         };
     </script>
 </body>
