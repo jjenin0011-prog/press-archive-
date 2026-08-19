@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سجل الصحفيين الفلسطينيين</title>
+
+    <meta name="google-site-verification" content="CPGrqBveMH0hfyyo5ob9plnh9qkCF95W3pxLx8mKnEQ" />
+
+    <title>عين الحقيقة | سجل الصحفيين الفلسطينيين</title>
+    <meta name="description" content="منصة وثائقية رقمية لتكريم وتوثيق شهادات الصحفيين الفلسطينيين، والشهداء، والأسرى، والجرحى.">
+    <meta name="keywords" content="press-pall, عين الحقيقة, صحفيين فلسطين, شهداء الصحافة, أسرى الصحافة, غزة, جنين">
+    <meta name="author" content="عين الحقيقة">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="عين الحقيقة | سجل الصحفيين الفلسطينيين">
+    <meta property="og:description" content="سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين الفلسطينيين.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://press-pall.netlify.app">
+
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -443,7 +456,6 @@
     </div>
 
     <script>
-        // مفاتيح قاعدة البيانات الخاصة بك
         const firebaseConfig = {
             apiKey: "AIzaSyAvUavBuk4mMfqqUqeebZGzRliD9NWE080",
             authDomain: "journalists-c4c17.firebaseapp.com",
@@ -476,7 +488,6 @@
             }
         }
 
-        // جلب البيانات لحظياً من السيرفر
         db.collection("journalists").onSnapshot((snapshot) => {
             journalistsData = [];
             snapshot.forEach((doc) => {
