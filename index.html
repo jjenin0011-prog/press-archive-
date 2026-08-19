@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أرشيف الذاكرة - توثيق الحقيقة</title>
+    <title>أرشيف الصحفيين - توثيق الحقيقة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -27,6 +27,8 @@
             display: flex;
             justify-content: center;
             padding: 10px;
+            direction: rtl;
+            text-align: right;
         }
 
         .phone-mockup {
@@ -74,7 +76,7 @@
             cursor: pointer;
         }
 
-        /* ترويسة المشروع والوصف */
+        /* ترويسة المشروع */
         .project-intro {
             padding: 20px 20px 10px;
         }
@@ -169,7 +171,7 @@
             gap: 14px;
         }
 
-        /* تصميم البطاقة */
+        /* تصميم البطاقة الصحفية */
         .journalist-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-subtle);
@@ -263,6 +265,7 @@
             flex-direction: column;
             gap: 16px;
             position: relative;
+            text-align: right;
         }
 
         .modal-close {
@@ -322,10 +325,10 @@
 <body>
 
     <div class="phone-mockup">
-        <!-- الهيدر العلوي النظيف -->
+        <!-- الهيدر العلوي -->
         <header>
             <div class="header-title-group">
-                <h1>أرشيف <span>الذاكرة</span></h1>
+                <h1>أرشيف <span>الصحفيين</span></h1>
             </div>
             <button class="top-icon-btn">
                 <i class="fa-solid fa-ellipsis-vertical"></i>
@@ -334,16 +337,16 @@
 
         <!-- ترويسة المشروع -->
         <div class="project-intro">
-            <span class="project-tag">مشروع توثيق إعلامي</span>
-            <h2>توثيق الحكايات</h2>
-            <p>«اضغط على بطاقة أي شخص لقراءة حكايته الكاملة.»</p>
+            <span class="project-tag">توثيق الحقيقة</span>
+            <h2>سجل التضحيات الصحفية</h2>
+            <p>«اضغط على بطاقة أي صحفي لاستعراض سيرته وحكايته.»</p>
         </div>
 
         <!-- شريط البحث -->
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث بالاسم أو اللقب..." oninput="filterRecords()">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="filterRecords()">
             </div>
         </div>
 
@@ -363,10 +366,10 @@
             <div class="modal-content">
                 <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
                 <div class="modal-image-container">
-                    <img id="modalImg" src="" alt="صورة الشخصية" onerror="this.src='https://via.placeholder.com/90?text=Profile'">
+                    <img id="modalImg" src="" alt="صورة الصحفي" onerror="this.src='https://via.placeholder.com/90?text=Press'">
                 </div>
                 <div class="modal-header-info">
-                    <h2 id="modalName">الاسم</h2>
+                    <h2 id="modalName">اسم الصحفي</h2>
                     <span id="modalInstitution">المؤسسة</span>
                 </div>
                 <div class="modal-body-text" id="modalDetails">
@@ -376,7 +379,7 @@
         </div>
 
         <footer>
-            ARCHIVE SYSTEM &copy; 2026
+            PRESS ARCHIVE SYSTEM &copy; 2026
         </footer>
     </div>
 
@@ -403,7 +406,7 @@
             filtered.forEach(person => {
                 let badgeClass = '';
                 let labelText = '';
-                if(person.category === 'martyr') { badgeClass = 'badge-martyr'; labelText = 'شهيد'; }
+                if(person.category === 'martyr') { badgeClass = 'badge-martyr'; labelText = 'شهيد صحفي'; }
                 else if(person.category === 'imprisoned') { badgeClass = 'badge-imprisoned'; labelText = 'معتقل'; }
                 else if(person.category === 'wounded') { badgeClass = 'badge-wounded'; labelText = 'مصاب'; }
 
