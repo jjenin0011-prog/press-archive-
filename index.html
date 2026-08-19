@@ -77,7 +77,7 @@
             cursor: pointer;
         }
 
-        /* القائمة المنسدلة للثلاث نقاط */
+        /* القائمة المنسدلة للثلاث نقاط (جهة اليسار) */
         .dropdown-menu {
             position: absolute;
             top: 70px;
@@ -85,10 +85,10 @@
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 14px;
-            width: 260px;
+            width: 280px;
             display: none;
             flex-direction: column;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             z-index: 200;
             overflow: hidden;
         }
@@ -108,6 +108,28 @@
         .dropdown-section p {
             color: var(--text-muted);
             line-height: 1.5;
+        }
+
+        .cities-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .city-tag {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .city-tag:hover, .city-tag.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #fff;
         }
 
         /* ترويسة المشروع */
@@ -163,7 +185,7 @@
         }
         .search-box input::placeholder { color: #64748b; }
 
-        /* شريط الفلاتر والمدن (يبدأ من اليمين) */
+        /* شريط الفلاتر تحت البحث */
         .filters-container {
             display: flex;
             gap: 8px;
@@ -178,7 +200,7 @@
             background-color: var(--bg-card);
             color: var(--text-muted);
             border: 1px solid var(--border-subtle);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 12px;
             font-size: 12px;
             font-weight: 500;
@@ -272,7 +294,7 @@
             color: #fff;
         }
 
-        /* نافذة التفاصيل المنبثقة المحدثة (Modal) */
+        /* نافذة التفاصيل المنبثقة (Modal) */
         .modal-overlay {
             position: absolute;
             top: 0;
@@ -349,13 +371,11 @@
             overflow-y: auto;
         }
 
-        footer {
-            text-align: center;
-            padding: 15px;
-            font-size: 10px;
-            color: var(--text-muted);
-            border-top: 1px solid var(--border-subtle);
-            letter-spacing: 0.5px;
+        .active-filter-indicator {
+            padding: 0 20px 8px;
+            font-size: 11px;
+            color: var(--accent-blue);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -371,15 +391,32 @@
                 <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
 
-            <!-- القائمة المنسدلة -->
+            <!-- القائمة المنسدلة (جهة اليسار) -->
             <div class="dropdown-menu" id="dropdownMenu">
                 <div class="dropdown-section">
                     <h4>للتواصل معنا</h4>
                     <p>jjenin0011@gmail.com</p>
                 </div>
                 <div class="dropdown-section">
-                    <h4>معلومات عنا</h4>
-                    <p>مشروع توثيقي رقمي بإشراف طالبة إعلام وتكنولوجيا، يهدف إلى تخليد حكايات وتضحيات الصحفيين في فلسطين ونقل الحقيقة بكل أمانة.</p>
+                    <h4>فرز حسب المدينة</h4>
+                    <div class="cities-grid">
+                        <span class="city-tag active" onclick="setCityFilter('الكل', this)">الكل</span>
+                        <span class="city-tag" onclick="setCityFilter('جنين', this)">جنين</span>
+                        <span class="city-tag" onclick="setCityFilter('نابلس', this)">نابلس</span>
+                        <span class="city-tag" onclick="setCityFilter('غزة', this)">غزة</span>
+                        <span class="city-tag" onclick="setCityFilter('رام الله', this)">رام الله</span>
+                        <span class="city-tag" onclick="setCityFilter('الخليل', this)">الخليل</span>
+                        <span class="city-tag" onclick="setCityFilter('طولكرم', this)">طولكرم</span>
+                        <span class="city-tag" onclick="setCityFilter('قلقيلية', this)">قلقيلية</span>
+                        <span class="city-tag" onclick="setCityFilter('سلفيت', this)">سلفيت</span>
+                        <span class="city-tag" onclick="setCityFilter('طوباس', this)">طوباس</span>
+                        <span class="city-tag" onclick="setCityFilter('بيت لحم', this)">بيت لحم</span>
+                        <span class="city-tag" onclick="setCityFilter('أريحا', this)">أريحا</span>
+                    </div>
+                </div>
+                <div class="dropdown-section">
+                    <h4>نبذة عنا</h4>
+                    <p>أنا طالبة إعلام وتكنولوجيا، أعمل على هذا المشروع التوثيقي الرقمي لنقل وتخليد حكايات وتضحيات الصحفيين في فلسطين ولتبقى الحقيقة حاضرة.</p>
                 </div>
             </div>
         </header>
@@ -395,30 +432,24 @@
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="filterRecords()">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="renderRecords()">
             </div>
         </div>
 
-        <!-- فلاتر المدن والأقسام (الكل باليمين) -->
+        <!-- فلاتر التصنيفات الأساسية -->
         <div class="filters-container">
-            <button class="filter-btn active" onclick="setFilter('all', this)">الكل</button>
-            <button class="filter-btn" onclick="setFilter('جنين', this)">جنين</button>
-            <button class="filter-btn" onclick="setFilter('نابلس', this)">نابلس</button>
-            <button class="filter-btn" onclick="setFilter('غزة', this)">غزة</button>
-            <button class="filter-btn" onclick="setFilter('رام الله', this)">رام الله</button>
-            <button class="filter-btn" onclick="setFilter('الخليل', this)">الخليل</button>
-            <button class="filter-btn" onclick="setFilter('طولكرم', this)">طولكرم</button>
-            <button class="filter-btn" onclick="setFilter('قلقيلية', this)">قلقيلية</button>
-            <button class="filter-btn" onclick="setFilter('سلفيت', this)">سلفيت</button>
-            <button class="filter-btn" onclick="setFilter('طوباس', this)">طوباس</button>
-            <button class="filter-btn" onclick="setFilter('بيت لحم', this)">بيت لحم</button>
-            <button class="filter-btn" onclick="setFilter('أريحا', this)">أريحا</button>
+            <button class="filter-btn active" onclick="setCategoryFilter('all', this)">الكل</button>
+            <button class="filter-btn" onclick="setCategoryFilter('martyr', this)">شهداء صحفيين</button>
+            <button class="filter-btn" onclick="setCategoryFilter('imprisoned', this)">أسرى صحفيين</button>
+            <button class="filter-btn" onclick="setCategoryFilter('wounded', this)">جرحى ومصابين</button>
         </div>
+
+        <div id="activeFilterNotice" class="active-filter-indicator"></div>
 
         <!-- مساحة عرض السجلات -->
         <div class="content-area" id="recordsContainer"></div>
 
-        <!-- نافذة التفاصيل المنبثقة المحدثة (Modal) -->
+        <!-- نافذة التفاصيل المنبثقة (Modal) -->
         <div class="modal-overlay" id="detailModal" onclick="closeModalOnOutside(event)">
             <div class="modal-content">
                 <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -435,40 +466,44 @@
                 </div>
             </div>
         </div>
-
-        <footer>
-            أرشيف الصحفيين الفلسطينيين &copy; 2026
-        </footer>
     </div>
 
-    <!-- ملف البيانات المتوقع وجوده -->
+    <!-- ملف البيانات المتوقع وجوده أو البيانات الافتراضية -->
     <script src="journalists.js"></script>
     <script>
-        let currentFilter = 'all';
+        let currentCategory = 'all';
+        let currentCity = 'الكل';
 
-        // بيانات تجريبية في حال لم يتم تحميل ملف journalists.js أو لإظهار اسماء عشوائية
         if (typeof journalistsData === 'undefined') {
             var journalistsData = [
-                { name: "أحمد أبو حسين", city: "غزة", institution: "وكالة إعلامية", category: "martyr", details: "صحفي ميداني وثق العدوان بكل شجاعة حتى ارتقى شهيداً في سبيل نقل الحقيقة.", image: "" },
                 { name: "شيرين أبو عاقلة", city: "جنين", institution: "قناة الجزيرة", category: "martyr", details: "صوت فلسطين الأبرز، استشهدت في مخيم جنين أثناء تغطيتها لاقتحام قوات الاحتلال.", image: "" },
+                { name: "أحمد أبو حسين", city: "غزة", institution: "وكالة إعلامية", category: "martyr", details: "صحفي ميداني وثق العدوان بكل شجاعة حتى ارتقى شهيداً في سبيل نقل الحقيقة.", image: "" },
                 { name: "معاذ عمارنة", city: "الخليل", institution: "مصور صحفي", category: "wounded", details: "فقد إحدى عينيه برصاص الاحتلال أثناء عمله الصحفي في محافظة الخليل.", image: "" },
-                { name: "بلال الطويل", city: "نابلس", institution: "شبكة قدس", category: "imprisoned", details: "صحفي معتقل إدارياً في سجون الاحتلال بسبب تغطياته ونشاطه الإعلامي.", image: "" }
+                { name: "بلال الطويل", city: "نابلس", institution: "شبكة قدس", category: "imprisoned", details: "صحفي معتقل إدارياً في سجون الاحتلال بسبب تغطياته ونشاطه الإعلامي.", image: "" },
+                { name: "إبراهيم تعامرة", city: "بيت لحم", institution: "إعلام حر", category: "wounded", details: "أصيب برصاص غادر أثناء تغطيته للمواجهات.", image: "" },
+                { name: "محمد البريم", city: "غزة", institution: "إذاعة القدس", category: "martyr", details: "استشهد إثر ق استهداف طائرات الاحتلال.", image: "" }
             ];
         }
 
-        function renderRecords(customSearch = '') {
+        function renderRecords() {
             const container = document.getElementById('recordsContainer');
-            const searchQuery = customSearch !== '' ? customSearch : document.getElementById('searchInput').value.toLowerCase();
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
             container.innerHTML = '';
 
             let filtered = journalistsData.filter(item => {
-                const matchesFilter = currentFilter === 'all' || item.city === currentFilter || item.category === currentFilter;
+                const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
+                const matchesCity = currentCity === 'الكل' || item.city === currentCity;
                 const matchesSearch = item.name.toLowerCase().includes(searchQuery) || item.institution.toLowerCase().includes(searchQuery) || item.city.toLowerCase().includes(searchQuery);
-                return matchesFilter && matchesSearch;
+                return matchesCategory && matchesCity && matchesSearch;
             });
 
+            // تحديث النص التوضيحي للفلترة النشطة
+            let noticeText = '';
+            if (currentCity !== 'الكل') noticeText += `المدينة: ${currentCity} `;
+            document.getElementById('activeFilterNotice').innerText = noticeText;
+
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث أو الفلتر المحدد</div>';
                 return;
             }
 
@@ -476,9 +511,8 @@
                 let badgeClass = '';
                 let labelText = '';
                 if(person.category === 'martyr') { badgeClass = 'badge-martyr'; labelText = 'شهيد صحفي'; }
-                else if(person.category === 'imprisoned') { badgeClass = 'badge-imprisoned'; labelText = 'معتقل'; }
-                else if(person.category === 'wounded') { badgeClass = 'badge-wounded'; labelText = 'مصاب'; }
-                else { badgeClass = 'badge-wounded'; labelText = person.city || 'صحفي'; }
+                else if(person.category === 'imprisoned') { badgeClass = 'badge-imprisoned'; labelText = 'أسير صحفي'; }
+                else if(person.category === 'wounded') { badgeClass = 'badge-wounded'; labelText = 'جريح ومصاب'; }
 
                 const card = document.createElement('div');
                 card.className = 'journalist-card';
@@ -488,7 +522,7 @@
                     <div class="card-top-row">
                         <div class="journalist-info">
                             <h3>${person.name}</h3>
-                            <span>${person.institution} - ${person.city || 'فلسطين'}</span>
+                            <span>${person.institution} - ${person.city}</span>
                         </div>
                         <span class="category-badge-small ${badgeClass}">${labelText}</span>
                     </div>
@@ -502,7 +536,7 @@
 
         function openModal(person) {
             document.getElementById('modalName').innerText = person.name;
-            document.getElementById('modalCity').innerText = `مدينة ${person.city || 'فلسطين'}`;
+            document.getElementById('modalCity').innerText = `مدينة ${person.city}`;
             document.getElementById('modalInstitution').innerText = person.institution;
             document.getElementById('modalDetails').innerText = person.details;
             document.getElementById('modalImg').src = person.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150';
@@ -519,14 +553,18 @@
             }
         }
 
-        function setFilter(filterVal, btn) {
-            currentFilter = filterVal;
+        function setCategoryFilter(cat, btn) {
+            currentCategory = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderRecords();
         }
 
-        function filterRecords() {
+        function setCityFilter(city, el) {
+            currentCity = city;
+            document.querySelectorAll('.city-tag').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            toggleDropdown(); // إغلاق القائمة بعد الاختيار
             renderRecords();
         }
 
@@ -535,12 +573,8 @@
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // عند تحديث الصفحة يظهر اسم عشوائي في شريط البحث أو كمقترح
+        // عند تحديث الصفحة تظهر بطاقة عشوائية أو قائمة عشوائية مميزة
         window.onload = () => {
-            if (journalistsData && journalistsData.length > 0) {
-                const randomPerson = journalistsData[Math.floor(Math.random() * journalistsData.length)];
-                document.getElementById('searchInput').placeholder = `ابحث مثلاً عن: ${randomPerson.name}`;
-            }
             renderRecords();
         };
     </script>
