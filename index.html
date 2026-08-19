@@ -3,310 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Press Archive // سجل التوثيق الميداني</title>
+    <title>أرشيف الصحافة - توثيق الحقيقة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
-            --bg-canvas: #07090e;
-            --card-surface: #10141d;
-            --press-blue: #0055ff;
-            --border-subtle: #1e2536;
+            --bg-deep: #07090e;
+            --bg-card: #10141d;
+            --border-subtle: #222736;
+            --accent-blue: #0055ff;
+            --accent-glow: rgba(0, 85, 255, 0.25);
             --text-main: #f8fafc;
-            --text-muted: #64748b;
+            --text-muted: #94a3b8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
 
         body {
-            background-color: var(--bg-canvas);
+            background-color: var(--bg-deep);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 30px 10px;
+            padding: 10px;
         }
 
         .phone-mockup {
             width: 100%;
-            max-width: 420px;
-            background-color: var(--bg-canvas);
+            max-width: 440px;
+            background: linear-gradient(160deg, #111520 0%, var(--bg-deep) 100%);
+            border-radius: 35px;
             border: 1px solid var(--border-subtle);
-            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 85, 255, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            min-height: 850px;
         }
 
-        /* رأس المجلة العالمي (Editorial Header) */
-        .editorial-header {
-            padding: 35px 24px 20px;
+        /* الهيدر الفاخر */
+        header {
+            padding: 30px 20px 20px;
+            text-align: center;
             border-bottom: 1px solid var(--border-subtle);
-            background: linear-gradient(180deg, #0d111a 0%, var(--bg-canvas) 100%);
+            position: relative;
         }
 
-        .meta-tag {
+        .tag-badge {
+            display: inline-block;
+            background: rgba(0, 85, 255, 0.15);
+            color: #60a5fa;
             font-size: 10px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 85, 255, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--press-blue);
-            margin-bottom: 8px;
-            font-weight: 700;
-            display: block;
         }
 
-        .editorial-header h1 {
-            font-size: 24px;
+        header h1 {
+            font-size: 26px;
             font-weight: 900;
-            letter-spacing: -0.5px;
             color: var(--text-main);
             margin-bottom: 6px;
+            letter-spacing: -0.5px;
         }
 
-        .editorial-header p {
+        header p {
             font-size: 12px;
             color: var(--text-muted);
-            line-height: 1.4;
         }
 
-        /* شريط الفلاتر الأنيق */
-        .filters-nav {
+        /* شريط البحث */
+        .search-container {
+            padding: 15px 20px;
+        }
+        .search-box {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-size: 13px;
             display: flex;
-            gap: 16px;
-            padding: 16px 24px;
-            overflow-x: auto;
-            border-bottom: 1px solid var(--border-subtle);
-            scrollbar-width: none;
+            align-items: center;
+            gap: 10px;
         }
-        .filters-nav::-webkit-scrollbar { display: none; }
-
-        .filter-tab {
+        .search-box input {
             background: none;
             border: none;
+            color: var(--text-main);
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+        }
+        .search-box input::placeholder { color: #64748b; }
+
+        /* شريط الفلاتر */
+        .filters-container {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .filters-container::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            background-color: var(--bg-card);
             color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: 12px;
             font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             white-space: nowrap;
-            padding-bottom: 4px;
-            position: relative;
-            transition: color 0.3s;
+            transition: all 0.3s ease;
         }
 
-        .filter-tab:hover { color: var(--text-main); }
-
-        .filter-tab.active {
-            color: var(--text-main);
+        .filter-btn.active {
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px var(--accent-glow);
             font-weight: 700;
         }
 
-        .filter-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -17px;
-            right: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--press-blue);
-        }
-
-        /* مساحة العرض الرئيسية */
-        .archive-stream {
-            padding: 20px 24px;
+        /* منطقة البطاقات */
+        .content-area {
+            flex: 1;
+            padding: 0 20px 20px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        /* تصميم البطاقة كقصاصة أرشيفية (Editorial Card) */
-        .record-card {
-            background-color: var(--card-surface);
+        /* تصميم البطاقة الفاخرة */
+        .journalist-card {
+            background-color: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.3s ease;
             position: relative;
-            transition: border-color 0.2s;
         }
 
-        .record-card:hover {
+        .journalist-card:hover {
             border-color: rgba(0, 85, 255, 0.4);
+            transform: translateY(-2px);
         }
 
         .card-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
         }
 
-        .identity-info h3 {
-            font-size: 16px;
+        .status-pill {
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .pill-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .pill-imprisoned { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .pill-wounded { background: rgba(0, 85, 255, 0.15); color: #60a5fa; border: 1px solid rgba(0, 85, 255, 0.3); }
+
+        .journalist-info h3 {
+            font-size: 17px;
             font-weight: 700;
             color: var(--text-main);
             margin-bottom: 2px;
         }
-
-        .identity-info span {
-            font-size: 11px;
+        .journalist-info span {
+            font-size: 12px;
             color: var(--text-muted);
-            letter-spacing: 0.5px;
         }
 
-        /* شارة الحالة بستايل هندسي نظيف */
-        .status-pill {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-        }
-        .pill-martyr { background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .pill-imprisoned { background: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.2); }
-        .pill-wounded { background: rgba(0, 85, 255, 0.1); color: #60a5fa; border: 1px solid rgba(0, 85, 255, 0.2); }
-
-        .card-core {
+        .card-body {
             font-size: 13px;
-            color: #94a3b8;
+            color: #cbd5e1;
             line-height: 1.6;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 10px 0;
         }
 
         .card-bottom {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
         }
 
-        .record-date {
-            font-size: 10px;
+        .date-text {
+            font-size: 11px;
             color: var(--text-muted);
-            letter-spacing: 0.5px;
-        }
-
-        /* تحويل زر الـ PDF إلى أيقونة أنيقة مخفية بانسجام (Minimalist Export Icon) */
-        .export-trigger {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
-        }
-
-        .export-trigger:hover {
-            color: var(--press-blue);
         }
 
         footer {
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             font-size: 10px;
             color: var(--text-muted);
             border-top: 1px solid var(--border-subtle);
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
 
     <div class="phone-mockup">
-        <!-- هيدر المجلة -->
-        <div class="editorial-header">
-            <span class="meta-tag">وثائق ميدانية موثقة</span>
+        <!-- الهيدر -->
+        <header>
+            <span class="tag-badge">مشروع توثيق صحفي</span>
             <h1>أرشيف الصحافة</h1>
-            <p>سجل رقمي مستقل لرصد انتهاكات الصحفيين</p>
+            <p>«الحقيقة لا تموت ولا يمكن طمسها»</p>
+        </header>
+
+        <!-- شريط البحث -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="filterRecords()">
+            </div>
         </div>
 
-        <!-- فلاتر بستايل التبويب الاحترافي -->
-        <nav class="filters-nav">
-            <button class="filter-tab active" onclick="filterRecords('all', this)">الكل</button>
-            <button class="filter-tab" onclick="filterRecords('martyr', this)">الشهداء</button>
-            <button class="filter-tab" onclick="filterRecords('imprisoned', this)">المعتقلون</button>
-            <button class="filter-tab" onclick="filterRecords('wounded', this)">المصابون</button>
-        </nav>
+        <!-- فلاتر الأقسام -->
+        <div class="filters-container">
+            <button class="filter-btn active" onclick="setCategory('all', this)">الكل</button>
+            <button class="filter-btn" onclick="setCategory('martyr', this)">الشهداء</button>
+            <button class="filter-btn" onclick="setCategory('imprisoned', this)">المعتقلون</button>
+            <button class="filter-btn" onclick="setCategory('wounded', this)">المصابون</button>
+        </div>
 
-        <!-- مساحة السجلات -->
-        <div class="archive-stream" id="recordsStream"></div>
+        <!-- مساحة عرض السجلات -->
+        <div class="content-area" id="recordsContainer"></div>
 
         <footer>
-            PRESS ARCHIVE SYSTEM // 2026
+            PRESS ARCHIVE SYSTEM &copy; 2026
         </footer>
     </div>
 
     <script src="journalists.js"></script>
     <script>
-        function renderRecords(filter = 'all') {
-            const stream = document.getElementById('recordsStream');
-            stream.innerHTML = '';
-            
-            const data = filter === 'all' ? journalistsData : journalistsData.filter(i => i.category === filter);
+        let currentCategory = 'all';
 
-            if (data.length === 0) {
-                stream.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:30px; font-size:12px;">لا توجد سجلات في هذا القسم</div>';
+        function renderRecords() {
+            const container = document.getElementById('recordsContainer');
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            container.innerHTML = '';
+
+            let filtered = journalistsData.filter(item => {
+                const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery) || item.institution.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث</div>';
                 return;
             }
 
-            data.forEach(item => {
+            filtered.forEach(person => {
                 let pillClass = '';
                 let labelText = '';
-                if(item.category === 'martyr') { pillClass = 'pill-martyr'; labelText = 'شهيد'; }
-                else if(item.category === 'imprisoned') { pillClass = 'pill-imprisoned'; labelText = 'معتقل'; }
-                else if(item.category === 'wounded') { pillClass = 'pill-wounded'; labelText = 'مصاب'; }
+                if(person.category === 'martyr') { pillClass = 'pill-martyr'; labelText = 'شهيد صحفي'; }
+                else if(person.category === 'imprisoned') { pillClass = 'pill-imprisoned'; labelText = 'معتقل'; }
+                else if(person.category === 'wounded') { pillClass = 'pill-wounded'; labelText = 'مصاب'; }
 
-                const cardId = `record-${item.id}`;
                 const card = document.createElement('div');
-                card.className = 'record-card';
-                card.id = cardId;
+                card.className = 'journalist-card';
                 card.innerHTML = `
                     <div class="card-top">
-                        <div class="identity-info">
-                            <h3>${item.name}</h3>
-                            <span>${item.institution}</span>
+                        <div class="journalist-info">
+                            <h3>${person.name}</h3>
+                            <span>${person.institution}</span>
                         </div>
                         <span class="status-pill ${pillClass}">${labelText}</span>
                     </div>
-                    <div class="card-core">
-                        <p>${item.details}</p>
+                    <div class="card-body">
+                        <p>${person.details}</p>
                     </div>
                     <div class="card-bottom">
-                        <span class="record-date">${item.date}</span>
-                        <button class="export-trigger" onclick="generatePDF('${cardId}', '${item.name}')" title="حفظ كملف">
-                            <i class="fa-solid fa-arrow-down-long"></i> حفظ السجل
-                        </button>
+                        <span class="date-text"><i class="fa-regular fa-calendar"></i> ${person.date}</span>
                     </div>
                 `;
-                stream.appendChild(card);
+                container.appendChild(card);
             });
         }
 
-        function filterRecords(cat, btn) {
-            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        function setCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            renderRecords(cat);
+            renderRecords();
         }
 
-        function generatePDF(id, name) {
-            const el = document.getElementById(id);
-            const options = {
-                margin: 10,
-                filename: `Press_Archive_${name.replace(/\s+/g, '_')}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#10141d' },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().from(el).set(options).save();
+        function filterRecords() {
+            renderRecords();
         }
 
-        window.onload = () => renderRecords('all');
+        window.onload = () => renderRecords();
     </script>
 </body>
 </html>
