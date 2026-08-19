@@ -156,6 +156,32 @@
             text-transform: uppercase;
         }
 
+        .bio-text {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .email-link {
+            color: #fff;
+            background: rgba(0, 102, 255, 0.15);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 102, 255, 0.3);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            transition: all 0.25s ease;
+        }
+        .email-link:hover {
+            background: var(--accent-blue);
+            transform: translateX(-3px);
+        }
+
         .cities-grid {
             display: flex;
             flex-wrap: wrap;
@@ -530,8 +556,18 @@
                 <i class="fa-solid fa-sliders"></i>
             </button>
 
-            <!-- القائمة المنسدلة -->
+            <!-- القائمة المنسدلة (تتضمن النبذة والإيميل والفلاتر) -->
             <div class="dropdown-menu" id="dropdownMenu">
+                <div class="dropdown-section">
+                    <h4>عن المشروع</h4>
+                    <p class="bio-text">
+                        منصة توثيقية تهدف للتوثيق الرقمي وتكريم الصحفيين، وحفظ الشهادات الميدانية للحقيقة.
+                    </p>
+                    <a href="mailto:contact@example.com" class="email-link">
+                        <i class="fa-regular fa-envelope"></i> تواصل معنا عبر البريد
+                    </a>
+                </div>
+
                 <div class="dropdown-section">
                     <h4>تصفية حسب المدينة</h4>
                     <div class="cities-grid">
@@ -616,7 +652,6 @@
 
     <!-- البيانات والبرمجة -->
     <script>
-        // بيانات تجريبية (قم باستبدالها ببياناتك أو ربطها بملف البيانات الخاص بك)
         const journalistsData = [
             { name: "أحمد أبو حسين", category: "martyr", institution: "قناة الشعب", city: "غزة", date: "2018-04-25", details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." },
             { name: "احمد الناعوق", category: "wounded", institution: "شبكة عين", city: "غزة", date: "2023-11-12", details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." },
@@ -628,15 +663,14 @@
         let currentCategory = 'all';
         let currentCity = 'الكل';
 
-        // دالة لتوحيد أشكال الحروف العربية (إزالة الهمزات، التشكيل، والتاء المربوطة)
         function normalizeArabicText(text) {
             if (!text) return '';
             return text
                 .toLowerCase()
-                .replace(/[أإآآ]/g, 'ا') // تحويل أشكال الهمزة إلى ألف عادية
-                .replace(/ة/g, 'ه')       // تحويل التاء المربوطة إلى هاء
-                .replace(/ى/g, 'ي')       // تحويل الألف المقصورة إلى ياء
-                .replace(/[\u064B-\u0652]/g, '') // إزالة التشكيل
+                .replace(/[أإآآ]/g, 'ا')
+                .replace(/ة/g, 'ه')
+                .replace(/ى/g, 'ي')
+                .replace(/[\u064B-\u0652]/g, '')
                 .trim();
         }
 
@@ -653,7 +687,6 @@
             const container = document.getElementById('recordsContainer');
             const searchInput = document.getElementById('searchInput');
             
-            // توحيد نص البحث المدخل من المستخدم
             const rawSearchQuery = searchInput ? searchInput.value : '';
             const cleanQuery = normalizeArabicText(rawSearchQuery);
             
@@ -667,7 +700,6 @@
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
                 const matchesCity = currentCity === 'الكل' || (item.city && item.city === currentCity);
                 
-                // توحيد بيانات الصحفي قبل المقارنة
                 const cleanName = normalizeArabicText(item.name);
                 const cleanInstitution = normalizeArabicText(item.institution);
                 const cleanCity = normalizeArabicText(item.city);
@@ -689,7 +721,6 @@
                 return;
             }
 
-            // عرض البطاقات مع التأثير الحركي المرحلي
             filtered.forEach((person, index) => {
                 let badgeClass = '';
                 let labelText = '';
