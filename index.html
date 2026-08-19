@@ -6,6 +6,8 @@
     <title>سجل الصحفيين الفلسطينيين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة تحويل العناصر إلى صور وتحميلها -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         :root {
@@ -346,27 +348,43 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 12px;
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-blue);
+            background: #0d131f;
         }
 
         .journalist-info h3 {
             font-size: 16px;
             font-weight: 800;
             color: var(--text-main);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .meta-tags {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 12px;
+            gap: 10px;
+            font-size: 11px;
             color: var(--text-muted);
         }
 
         .meta-tags span {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .category-pill {
@@ -374,6 +392,7 @@
             padding: 4px 10px;
             border-radius: 30px;
             font-weight: 700;
+            white-space: nowrap;
         }
         .pill-palestinian { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
         .pill-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
@@ -448,7 +467,7 @@
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             position: relative;
             box-shadow: 0 30px 60px rgba(0,0,0,0.9);
             transform: scale(0.88) translateY(15px);
@@ -470,6 +489,7 @@
             display: flex; justifyContent: center; align-items: center;
             cursor: pointer;
             transition: all 0.2s ease;
+            z-index: 10;
         }
         .modal-close:hover {
             background: rgba(239, 68, 68, 0.2);
@@ -477,27 +497,34 @@
             transform: rotate(90deg);
         }
 
+        /* الجزء الذي يتم تصويره وتصديره لكارت الصورة */
+        .downloadable-card-area {
+            background: #0f172a;
+            padding: 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
         .modal-header-hero { text-align: center; }
 
         .modal-avatar-wrapper {
-            width: 76px;
-            height: 76px;
+            width: 84px;
+            height: 84px;
             margin: 0 auto 10px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-            padding: 2px;
+            padding: 3px;
         }
 
-        .modal-avatar-inner {
+        .modal-avatar-img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
+            object-fit: cover;
             background: #0d131f;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 28px;
-            color: var(--accent-cyan);
         }
 
         .modal-header-hero h2 {
@@ -511,9 +538,9 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.03);
             padding: 12px;
-            border-radius: 16px;
+            border-radius: 14px;
             border: 1px solid var(--border-subtle);
         }
 
@@ -525,23 +552,23 @@
         }
 
         .info-box span {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: #fff;
         }
 
         .modal-story-box {
-            background: rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 14px;
+            border-radius: 14px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 6px;
         }
 
         .modal-story-box h4 {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--accent-cyan);
             display: flex;
             align-items: center;
@@ -549,11 +576,49 @@
         }
 
         .modal-story-box p {
-            font-size: 12px;
+            font-size: 11px;
             color: #cbd5e1;
-            line-height: 1.7;
-            max-height: 160px;
+            line-height: 1.6;
+            max-height: 120px;
             overflow-y: auto;
+        }
+
+        .card-watermark {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 9px;
+            color: var(--text-muted);
+            border-top: 1px dashed rgba(255,255,255,0.1);
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+
+        /* زر تحميل البطاقة */
+        .download-btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.6);
+        }
+
+        .download-btn:active {
+            transform: scale(0.97);
         }
     </style>
 </head>
@@ -635,53 +700,138 @@
             <button class="modal-close" onclick="closeModal()">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="modal-header-hero">
-                <div class="modal-avatar-wrapper">
-                    <div class="modal-avatar-inner">
-                        <i class="fa-solid fa-user-ninja"></i>
+            
+            <!-- الحاوية المراد تحميلها كصورة -->
+            <div class="downloadable-card-area" id="modalCardCapture">
+                <div class="modal-header-hero">
+                    <div class="modal-avatar-wrapper">
+                        <img id="modalAvatar" class="modal-avatar-img" src="" alt="صورة الصحفي">
+                    </div>
+                    <h2 id="modalName">---</h2>
+                    <span id="modalCategoryBadge" class="category-pill">---</span>
+                </div>
+                
+                <div class="modal-info-grid">
+                    <div class="info-box">
+                        <label>المؤسسة الإعلامية</label>
+                        <span id="modalInstitution">---</span>
+                    </div>
+                    <div class="info-box">
+                        <label>المدينة / الموقع</label>
+                        <span id="modalCity">---</span>
+                    </div>
+                    <div class="info-box">
+                        <label>تاريخ التوثيق / الاعتقال</label>
+                        <span id="modalDate">---</span>
+                    </div>
+                    <div class="info-box" id="modalSentenceBox">
+                        <label>الحكم القضائي</label>
+                        <span id="modalSentence" style="color: #facc15;">---</span>
                     </div>
                 </div>
-                <h2 id="modalName">---</h2>
-                <span id="modalCategoryBadge" class="category-pill">---</span>
-            </div>
-            
-            <div class="modal-info-grid">
-                <div class="info-box">
-                    <label>المؤسسة الإعلامية</label>
-                    <span id="modalInstitution">---</span>
+
+                <div class="modal-story-box">
+                    <h4><i class="fa-solid fa-file-lines"></i> التفاصيل والشهادة</h4>
+                    <p id="modalDetails">---</p>
                 </div>
-                <div class="info-box">
-                    <label>المدينة / الموقع</label>
-                    <span id="modalCity">---</span>
-                </div>
-                <div class="info-box">
-                    <label>تاريخ التوثيق / الاعتقال</label>
-                    <span id="modalDate">---</span>
-                </div>
-                <div class="info-box" id="modalSentenceBox">
-                    <label>الحكم القضائي</label>
-                    <span id="modalSentence" style="color: #facc15;">---</span>
+
+                <div class="card-watermark">
+                    <span><i class="fa-solid fa-newspaper"></i> عين الحقيقة - سجل الصحفيين</span>
+                    <span>وثيقة رقمية</span>
                 </div>
             </div>
 
-            <div class="modal-story-box">
-                <h4><i class="fa-solid fa-file-lines"></i> التفاصيل والشهادة</h4>
-                <p id="modalDetails">---</p>
-            </div>
+            <!-- زر تحميل البطاقة كصورة -->
+            <button class="download-btn" onclick="downloadCardImage()">
+                <i class="fa-solid fa-download"></i> تحميل البطاقة كصورة
+            </button>
         </div>
     </div>
 
     <!-- البيانات والبرمجة -->
     <script>
+        // إمكانية إضافة رابط صورة محلي أو خارجي لكل صحفي
         const journalistsData = [
-            { name: "وائل الدحدوح", category: "palestinian", institution: "قناة الجزيرة", city: "غزة", date: "2024-01-01", sentence: "", details: "صحفي ومراسل ميداني يغطي الأحداث والتطورات في قطاع غزة." },
-            { name: "أحمد أبو حسين", category: "martyr", institution: "قناة الشعب", city: "غزة", date: "2018-04-25", sentence: "", details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." },
-            { name: "احمد الناعوق", category: "wounded", institution: "شبكة عين", city: "غزة", date: "2023-11-12", sentence: "", details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." },
-            { name: "محمد القيق", category: "imprisoned", institution: "صحفي حر", city: "رام الله", date: "2021-01-15", sentence: "إداري (6 أشهر)", details: "اعتقل إدارياً لعدة أشهر بسبب نشاطه والتغطية الإعلامية." },
-            { name: "شيرين أبو عاقلة", category: "martyr", institution: "قناة الجزيرة", city: "جنين", date: "2022-05-11", sentence: "", details: "استشهدت برصاصة أثناء تغطيتها لاقتحام مخيم جنين." },
-            { name: "كريستين ريناوي", category: "palestinian", institution: "تلفزيون فلسطين", city: "القدس", date: "2023-05-10", sentence: "", details: "صحفية ومراسلة ميدانية تنقل أحداث مدينة القدس والانتهاكات المستمرة." },
-            { name: "إبراهيم ملحم", category: "wounded", institution: "تلفزيون فلسطين", city: "الخليل", date: "2020-08-04", sentence: "", details: "أصيب بقنبلة غاز بشكل مباشر أثناء التغطية." },
-            { name: "علي السمودي", category: "imprisoned", institution: "صحيفة الأيام", city: "جنين", date: "2023-09-10", sentence: "موقوف لغاية المحاكمة", details: "تم اعتقاله أثناء مداهمة منزله في جنين." }
+            { 
+                name: "وائل الدحدوح", 
+                category: "palestinian", 
+                institution: "قناة الجزيرة", 
+                city: "غزة", 
+                date: "2024-01-01", 
+                sentence: "", 
+                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+                details: "صحفي ومراسل ميداني يغطي الأحداث والتطورات الميدانية والصمود الإعلامي في قطاع غزة." 
+            },
+            { 
+                name: "أحمد أبو حسين", 
+                category: "martyr", 
+                institution: "قناة الشعب", 
+                city: "غزة", 
+                date: "2018-04-25", 
+                sentence: "", 
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+                details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." 
+            },
+            { 
+                name: "احمد الناعوق", 
+                category: "wounded", 
+                institution: "شبكة عين", 
+                city: "غزة", 
+                date: "2023-11-12", 
+                sentence: "", 
+                image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+                details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." 
+            },
+            { 
+                name: "محمد القيق", 
+                category: "imprisoned", 
+                institution: "صحفي حر", 
+                city: "رام الله", 
+                date: "2021-01-15", 
+                sentence: "إداري (6 أشهر)", 
+                image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+                details: "اعتقل إدارياً لعدة أشهر بسبب نشاطه والتغطية الإعلامية." 
+            },
+            { 
+                name: "شيرين أبو عاقلة", 
+                category: "martyr", 
+                institution: "قناة الجزيرة", 
+                city: "جنين", 
+                date: "2022-05-11", 
+                sentence: "", 
+                image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+                details: "استشهدت برصاصة أثناء تغطيتها لاقتحام مخيم جنين." 
+            },
+            { 
+                name: "كريستين ريناوي", 
+                category: "palestinian", 
+                institution: "تلفزيون فلسطين", 
+                city: "القدس", 
+                date: "2023-05-10", 
+                sentence: "", 
+                image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
+                details: "صحفية ومراسلة ميدانية تنقل أحداث مدينة القدس والانتهاكات المستمرة." 
+            },
+            { 
+                name: "إبراهيم ملحم", 
+                category: "wounded", 
+                institution: "تلفزيون فلسطين", 
+                city: "الخليل", 
+                date: "2020-08-04", 
+                sentence: "", 
+                image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
+                details: "أصيب بقنبلة غاز بشكل مباشر أثناء التغطية." 
+            },
+            { 
+                name: "علي السمودي", 
+                category: "imprisoned", 
+                institution: "صحيفة الأيام", 
+                city: "جنين", 
+                date: "2023-09-10", 
+                sentence: "موقوف لغاية المحاكمة", 
+                image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+                details: "تم اعتقاله أثناء مداهمة منزله في جنين." 
+            }
         ];
 
         let currentCategory = 'all';
@@ -770,7 +920,8 @@
                 
                 const displayCity = person.city ? person.city : 'غير محدد';
                 const displayDate = person.date ? person.date : '---';
-                
+                const avatarSrc = person.image || 'https://via.placeholder.com/150';
+
                 let sentenceBadgeHtml = '';
                 if(person.category === 'imprisoned' && person.sentence) {
                     sentenceBadgeHtml = `<span class="sentence-tag"><i class="fa-solid fa-gavel"></i> ${person.sentence}</span>`;
@@ -778,11 +929,14 @@
 
                 card.innerHTML = `
                     <div class="card-top">
-                        <div class="journalist-info">
-                            <h3>${person.name}</h3>
-                            <div class="meta-tags">
-                                <span><i class="fa-solid fa-building"></i> ${person.institution}</span>
-                                <span><i class="fa-solid fa-location-dot"></i> ${displayCity}</span>
+                        <div class="card-header-left">
+                            <img src="${avatarSrc}" alt="${person.name}" class="card-avatar">
+                            <div class="journalist-info">
+                                <h3>${person.name}</h3>
+                                <div class="meta-tags">
+                                    <span><i class="fa-solid fa-building"></i> ${person.institution}</span>
+                                    <span><i class="fa-solid fa-location-dot"></i> ${displayCity}</span>
+                                </div>
                             </div>
                         </div>
                         <span class="category-pill ${badgeClass}">${labelText}</span>
@@ -805,6 +959,9 @@
             document.getElementById('modalInstitution').innerText = person.institution || 'غير محدد';
             document.getElementById('modalDate').innerText = person.date || 'غير محدد';
             document.getElementById('modalDetails').innerText = person.details;
+            
+            const avatarImg = document.getElementById('modalAvatar');
+            avatarImg.src = person.image || 'https://via.placeholder.com/150';
 
             const badgeEl = document.getElementById('modalCategoryBadge');
             const sentenceBox = document.getElementById('modalSentenceBox');
@@ -829,6 +986,24 @@
             }
 
             document.getElementById('detailModal').classList.add('show');
+        }
+
+        /* دالة تحميل بطاقة الصحفي كصورة */
+        function downloadCardImage() {
+            const captureArea = document.getElementById('modalCardCapture');
+            const journalistName = document.getElementById('modalName').innerText;
+
+            html2canvas(captureArea, {
+                backgroundColor: '#0f172a',
+                useCORS: true,
+                scale: 2
+            }).then(canvas => {
+                const image = canvas.toDataURL("image/png");
+                const link = document.createElement('a');
+                link.href = image;
+                link.download = `بطاقة_${journalistName.replace(/\s+/g, '_')}.png`;
+                link.click();
+            });
         }
 
         function closeModal() {
