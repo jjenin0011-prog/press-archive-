@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --bg-dark: #090d16;
@@ -75,7 +78,6 @@
             gap: 10px;
         }
 
-        /* جعل اللوجو قابل للنقر لدخول الأدمن */
         .logo-icon {
             width: 36px;
             height: 36px;
@@ -90,9 +92,7 @@
             cursor: pointer;
             transition: transform 0.2s ease;
         }
-        .logo-icon:hover {
-            transform: scale(1.05);
-        }
+        .logo-icon:hover { transform: scale(1.05); }
 
         .header-title-group h1 {
             font-size: 19px;
@@ -130,6 +130,25 @@
             color: #fff;
             border-color: var(--accent-blue);
             transform: rotate(90deg);
+        }
+
+        .admin-controls {
+            display: none;
+            gap: 8px;
+            padding: 10px 20px 0;
+        }
+        .admin-btn {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
         }
 
         .dropdown-menu {
@@ -173,12 +192,7 @@
             text-transform: uppercase;
         }
 
-        .bio-text {
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 10px;
-            font-size: 12px;
-        }
+        .bio-text { color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; font-size: 12px; }
 
         .email-link {
             color: #fff;
@@ -192,20 +206,10 @@
             align-items: center;
             gap: 8px;
             width: 100%;
-            transition: all 0.25s ease;
             word-break: break-all;
         }
-        .email-link:hover {
-            background: var(--accent-blue);
-            transform: translateX(-3px);
-        }
 
-        .cities-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 4px;
-        }
+        .cities-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
         .city-tag {
             background: rgba(255,255,255,0.04);
             border: 1px solid var(--border-subtle);
@@ -214,425 +218,100 @@
             font-size: 11px;
             color: var(--text-muted);
             cursor: pointer;
-            transition: all 0.2s ease;
         }
-        .city-tag:hover {
-            background: rgba(0, 102, 255, 0.2);
-            color: #fff;
-            transform: translateY(-1px);
-        }
-        .city-tag.active {
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-            color: #fff;
-        }
+        .city-tag.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
 
         .project-intro { padding: 20px 20px 10px; }
         .project-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 102, 255, 0.1);
-            color: var(--accent-cyan);
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 102, 255, 0.2);
-            margin-bottom: 10px;
-            font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(0, 102, 255, 0.1); color: var(--accent-cyan);
+            font-size: 11px; padding: 4px 10px; border-radius: 20px;
+            border: 1px solid rgba(0, 102, 255, 0.2); margin-bottom: 10px; font-weight: 600;
         }
         .project-intro h2 { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
         .project-intro p { font-size: 12px; color: var(--text-muted); }
 
         .search-container { padding: 10px 20px; }
         .search-box {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 12px 16px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%; background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle); border-radius: 16px;
+            padding: 12px 16px; color: #fff; display: flex; align-items: center; gap: 12px;
         }
-        .search-box:focus-within {
-            border-color: var(--accent-blue);
-            background: rgba(0, 102, 255, 0.05);
-            box-shadow: 0 0 20px rgba(0, 102, 255, 0.2);
-        }
-        .search-box input {
-            background: none;
-            border: none;
-            color: #fff;
-            outline: none;
-            width: 100%;
-            font-size: 13px;
-        }
+        .search-box input { background: none; border: none; color: #fff; outline: none; width: 100%; font-size: 13px; }
 
-        .filters-container {
-            display: flex;
-            gap: 8px;
-            padding: 5px 20px 12px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
+        .filters-container { display: flex; gap: 8px; padding: 5px 20px 12px; overflow-x: auto; scrollbar-width: none; }
         .filters-container::-webkit-scrollbar { display: none; }
 
         .filter-btn {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-muted);
-            border: 1px solid var(--border-subtle);
-            padding: 8px 14px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            background: rgba(255, 255, 255, 0.03); color: var(--text-muted);
+            border: 1px solid var(--border-subtle); padding: 8px 14px;
+            border-radius: 12px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
         }
-        .filter-btn:hover {
-            background: rgba(255, 255, 255, 0.07);
-            color: #fff;
-        }
-        .filter-btn:active { transform: scale(0.95); }
-        .filter-btn.active {
-            background: var(--accent-blue);
-            color: #ffffff;
-            border-color: var(--accent-blue);
-            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.35);
-        }
+        .filter-btn.active { background: var(--accent-blue); color: #ffffff; border-color: var(--accent-blue); }
 
-        .active-filter-indicator {
-            padding: 0 20px 8px;
-            font-size: 11px;
-            color: var(--accent-cyan);
-            font-weight: 700;
-            min-height: 22px;
-        }
-
-        .content-area {
-            flex: 1;
-            padding: 5px 20px 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        @keyframes cardFadeIn {
-            from { opacity: 0; transform: translateY(18px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        .content-area { flex: 1; padding: 5px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
         .journalist-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 20px;
-            padding: 16px 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            position: relative;
-            cursor: pointer;
-            animation: cardFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 20px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;
+            cursor: pointer; position: relative;
         }
+        .journalist-card:hover { background: var(--bg-card-hover); border-color: var(--border-glow); }
 
-        .journalist-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-glow);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
-        }
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .card-header-left { display: flex; align-items: center; gap: 12px; }
+        .card-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue); background: #0d131f; }
 
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-        }
+        .journalist-info h3 { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+        .meta-tags { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-muted); }
 
-        .card-header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .card-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-blue);
-            background: #0d131f;
-        }
-
-        .journalist-info h3 {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--text-main);
-            margin-bottom: 4px;
-        }
-
-        .meta-tags {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .meta-tags span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .category-pill {
-            font-size: 10px;
-            padding: 4px 10px;
-            border-radius: 30px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
+        .category-pill { font-size: 10px; padding: 4px 10px; border-radius: 30px; font-weight: 700; white-space: nowrap; }
         .pill-palestinian { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
         .pill-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
         .pill-imprisoned { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
         .pill-wounded { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
 
-        .sentence-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 10px;
-            color: #facc15;
-            background: rgba(234, 179, 8, 0.1);
-            padding: 2px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(234, 179, 8, 0.2);
-            margin-right: 6px;
-        }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.04); font-size: 11px; color: var(--text-muted); }
 
-        .card-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .read-more-link {
-            color: var(--accent-cyan);
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: transform 0.2s ease;
-        }
-
-        .journalist-card:hover .read-more-link {
-            transform: translateX(-4px);
-        }
-
-        /* ===== Modal ===== */
+        /* Modal */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(5, 8, 15, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            opacity: 0;
-            visibility: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            padding: 20px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 8, 15, 0.85); backdrop-filter: blur(12px);
+            opacity: 0; visibility: hidden; display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; transition: 0.3s;
         }
-
         .modal-overlay.show { opacity: 1; visibility: visible; }
-
         .modal-content {
-            background: linear-gradient(180deg, #131a29 0%, #0b0f19 100%);
-            border: 1px solid var(--border-glow);
-            border-radius: 28px;
-            width: 100%;
-            max-width: 380px;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            position: relative;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-            transform: scale(0.88) translateY(15px);
-            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: #131a29; border: 1px solid var(--border-glow); border-radius: 28px;
+            width: 100%; max-width: 380px; max-height: 90vh; overflow-y: auto; padding: 24px;
+            display: flex; flex-direction: column; gap: 14px; position: relative;
         }
-
-        .modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
 
         .modal-close {
-            position: absolute;
-            top: 16px; left: 16px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-muted);
-            width: 34px; height: 34px;
-            border-radius: 50%;
-            display: flex; justifyContent: center; align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            z-index: 10;
-        }
-        .modal-close:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            transform: rotate(90deg);
+            position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle); color: var(--text-muted); width: 34px; height: 34px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
         }
 
-        .downloadable-card-area {
-            background: #0f172a;
-            padding: 16px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        .downloadable-card-area { background: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; gap: 12px; }
         .modal-header-hero { text-align: center; }
+        .modal-avatar-wrapper { width: 84px; height: 84px; margin: 0 auto 10px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); padding: 3px; position: relative; }
+        .modal-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #0d131f; }
 
-        .modal-avatar-wrapper {
-            width: 84px;
-            height: 84px;
-            margin: 0 auto 10px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-            padding: 3px;
-            position: relative;
-        }
+        .modal-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 14px; border: 1px solid var(--border-subtle); }
+        .info-box label { font-size: 10px; color: var(--text-muted); display: block; }
+        .info-box span { font-size: 11px; font-weight: 700; color: #fff; }
 
-        .modal-avatar-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #0d131f;
-        }
+        .modal-story-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px; }
+        .modal-story-box h4 { font-size: 11px; color: var(--accent-cyan); margin-bottom: 4px; }
+        .modal-story-box p { font-size: 11px; color: #cbd5e1; line-height: 1.6; max-height: 120px; overflow-y: auto; }
 
-        /* زر الكاميرا للرفع - مخفي افتراضياً للعموم */
-        .upload-avatar-btn {
-            display: none; /* يظهر فقط عند تفعيل وضع الأدمن */
-            position: absolute;
-            bottom: 0; right: 0;
-            background: var(--accent-blue);
-            color: #fff;
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 2px solid #0f172a;
-            font-size: 12px;
-            transition: transform 0.2s ease;
-        }
-        .upload-avatar-btn:hover { transform: scale(1.15); }
+        .card-watermark { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; }
 
-        .modal-header-hero h2 {
-            font-size: 19px;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 6px;
-        }
+        .download-btn { background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #fff; border: none; border-radius: 14px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
 
-        .modal-info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            background: rgba(255,255,255,0.03);
-            padding: 12px;
-            border-radius: 14px;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .info-box label {
-            font-size: 10px;
-            color: var(--text-muted);
-            display: block;
-            margin-bottom: 2px;
-        }
-
-        .info-box span {
-            font-size: 11px;
-            font-weight: 700;
-            color: #fff;
-        }
-
-        .modal-story-box {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .modal-story-box h4 {
-            font-size: 11px;
-            color: var(--accent-cyan);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .modal-story-box p {
-            font-size: 11px;
-            color: #cbd5e1;
-            line-height: 1.6;
-            max-height: 120px;
-            overflow-y: auto;
-        }
-
-        .card-watermark {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 9px;
-            color: var(--text-muted);
-            border-top: 1px dashed rgba(255,255,255,0.1);
-            padding-top: 8px;
-            margin-top: 4px;
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-            color: #fff;
-            border: none;
-            border-radius: 14px;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.4);
-            transition: all 0.25s ease;
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 102, 255, 0.6);
+        /* Form Modal */
+        .form-modal-content input, .form-modal-content select, .form-modal-content textarea {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: white; padding: 10px; border-radius: 10px; font-size: 12px; width: 100%; margin-top: 6px;
         }
     </style>
 </head>
@@ -641,7 +320,6 @@
     <div class="phone-mockup">
         <header>
             <div class="header-title-group">
-                <!-- الضغط هنا للادمن لتسجيل الدخول -->
                 <div class="logo-icon" onclick="triggerAdminLogin()" title="وضع الإدارة">
                     <i class="fa-solid fa-newspaper"></i>
                 </div>
@@ -655,9 +333,7 @@
             <div class="dropdown-menu" id="dropdownMenu">
                 <div class="dropdown-section">
                     <h4>عن المشروع</h4>
-                    <p class="bio-text">
-                        منصة توثيقية تهدف للتوثيق الرقمي وتكريم الصحفيين الفلسطينيين، وحفظ الشهادات الميدانية للحقيقة.
-                    </p>
+                    <p class="bio-text">منصة توثيقية تهدف للتوثيق الرقمي وتكريم الصحفيين الفلسطينيين.</p>
                     <a href="mailto:jjenin0011@gmail.com" class="email-link">
                         <i class="fa-regular fa-envelope"></i> jjenin0011@gmail.com
                     </a>
@@ -678,6 +354,10 @@
             </div>
         </header>
 
+        <div class="admin-controls" id="adminBar">
+            <button class="admin-btn" onclick="openFormModal()"><i class="fa-solid fa-plus"></i> إضافة صحفي جديد</button>
+        </div>
+
         <div class="project-intro">
             <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> توثيق الانتهاكات</span>
             <h2>سجل الصحفيين الفلسطينيين</h2>
@@ -687,7 +367,7 @@
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي، المؤسسة، أو المدينة..." oninput="renderRecords()">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي، المؤسسة..." oninput="renderRecords()">
             </div>
         </div>
 
@@ -699,50 +379,27 @@
             <button class="filter-btn" onclick="setCategoryFilter('wounded', this)">الجرحى</button>
         </div>
 
-        <div class="active-filter-indicator" id="activeFilterNotice"></div>
-
         <div class="content-area" id="recordsContainer"></div>
     </div>
 
-    <!-- النافذة المنبثقة -->
     <div class="modal-overlay" id="detailModal" onclick="closeModalOnOutside(event)">
         <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             
             <div class="downloadable-card-area" id="modalCardCapture">
                 <div class="modal-header-hero">
                     <div class="modal-avatar-wrapper">
-                        <img id="modalAvatar" class="modal-avatar-img" src="" alt="صورة الصحفي" crossorigin="anonymous">
-                        
-                        <!-- زر الرفع (يظهر فقط إذا كان تفعيل الأدمن نُفذ) -->
-                        <label for="imageUploader" class="upload-avatar-btn" id="uploadBtn" title="تغيير الصورة">
-                            <i class="fa-solid fa-camera"></i>
-                        </label>
-                        <input type="file" id="imageUploader" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                        <img id="modalAvatar" class="modal-avatar-img" src="" alt="صورة الصحفي">
                     </div>
                     <h2 id="modalName">---</h2>
                     <span id="modalCategoryBadge" class="category-pill">---</span>
                 </div>
                 
                 <div class="modal-info-grid">
-                    <div class="info-box">
-                        <label>المؤسسة الإعلامية</label>
-                        <span id="modalInstitution">---</span>
-                    </div>
-                    <div class="info-box">
-                        <label>المدينة / الموقع</label>
-                        <span id="modalCity">---</span>
-                    </div>
-                    <div class="info-box">
-                        <label>تاريخ التوثيق / الاعتقال</label>
-                        <span id="modalDate">---</span>
-                    </div>
-                    <div class="info-box" id="modalSentenceBox">
-                        <label>الحكم القضائي</label>
-                        <span id="modalSentence" style="color: #facc15;">---</span>
-                    </div>
+                    <div class="info-box"><label>المؤسسة الإعلامية</label><span id="modalInstitution">---</span></div>
+                    <div class="info-box"><label>المدينة / الموقع</label><span id="modalCity">---</span></div>
+                    <div class="info-box"><label>تاريخ التوثيق / الاعتقال</label><span id="modalDate">---</span></div>
+                    <div class="info-box" id="modalSentenceBox"><label>الحكم القضائي</label><span id="modalSentence" style="color: #facc15;">---</span></div>
                 </div>
 
                 <div class="modal-story-box">
@@ -756,119 +413,91 @@
                 </div>
             </div>
 
-            <button class="download-btn" onclick="downloadCardImage()">
-                <i class="fa-solid fa-download"></i> تحميل البطاقة كصورة
-            </button>
+            <button class="download-btn" onclick="downloadCardImage()"><i class="fa-solid fa-download"></i> تحميل البطاقة كصورة</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="formModal">
+        <div class="modal-content form-modal-content">
+            <button class="modal-close" onclick="closeFormModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h3 id="formTitle" style="color: #fff;">إضافة / تعديل صحفي</h3>
+            <input type="hidden" id="editPersonId">
+            <input type="text" id="inputName" placeholder="الاسم الكامل">
+            <select id="inputCategory">
+                <option value="palestinian">صحفي فلسطيني</option>
+                <option value="martyr">شهيد</option>
+                <option value="imprisoned">أسير</option>
+                <option value="wounded">جريح</option>
+            </select>
+            <input type="text" id="inputInstitution" placeholder="المؤسسة الإعلامية">
+            <input type="text" id="inputCity" placeholder="المدينة (مثال: غزة، جنين)">
+            <input type="text" id="inputDate" placeholder="التاريخ">
+            <input type="text" id="inputSentence" placeholder="الحكم (إن وجد للأسرى)">
+            <textarea id="inputDetails" placeholder="التفاصيل والمعلومات"></textarea>
+            
+            <label style="color:#fff; font-size:12px; margin-top:8px;">اختر صورة الشخص:</label>
+            <input type="file" id="inputImageFile" accept="image/*">
+            
+            <button class="admin-btn" style="margin-top:10px;" onclick="savePersonData()">حفظ للجميع</button>
         </div>
     </div>
 
     <script>
-        let selectedPerson = null;
-        let isAdmin = false; // الوضع الافتراضي للزوار (ليس أدمن)
+        // مفاتيح قاعدة البيانات الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyAvUavBuk4mMfqqUqeebZGzRliD9NWE080",
+            authDomain: "journalists-c4c17.firebaseapp.com",
+            projectId: "journalists-c4c17",
+            storageBucket: "journalists-c4c17.firebasestorage.app",
+            messagingSenderId: "744548646361",
+            appId: "1:744548646361:web:d45373fd516ed88005edc8",
+            measurementId: "G-MS0GYVPV5F"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        const journalistsData = [
-            { 
-                id: 1,
-                name: "وائل الدحدوح", 
-                category: "palestinian", 
-                institution: "قناة الجزيرة", 
-                city: "غزة", 
-                date: "2024-01-01", 
-                sentence: "", 
-                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-                details: "صحفي ومراسل ميداني يغطي الأحداث والتطورات الميدانية والصمود الإعلامي في قطاع غزة." 
-            },
-            { 
-                id: 2,
-                name: "أحمد أبو حسين", 
-                category: "martyr", 
-                institution: "قناة الشعب", 
-                city: "غزة", 
-                date: "2018-04-25", 
-                sentence: "", 
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-                details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." 
-            },
-            { 
-                id: 3,
-                name: "احمد الناعوق", 
-                category: "wounded", 
-                institution: "شبكة عين", 
-                city: "غزة", 
-                date: "2023-11-12", 
-                sentence: "", 
-                image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
-                details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." 
-            },
-            { 
-                id: 4,
-                name: "محمد القيق", 
-                category: "imprisoned", 
-                institution: "صحفي حر", 
-                city: "رام الله", 
-                date: "2021-01-15", 
-                sentence: "إداري (6 أشهر)", 
-                image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
-                details: "اعتقل إدارياً لعدة أشهر بسبب نشاطه والتغطية الإعلامية." 
-            },
-            { 
-                id: 5,
-                name: "شيرين أبو عاقلة", 
-                category: "martyr", 
-                institution: "قناة الجزيرة", 
-                city: "جنين", 
-                date: "2022-05-11", 
-                sentence: "", 
-                image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
-                details: "استشهدت برصاصة أثناء تغطيتها لاقتحام مخيم جنين." 
-            },
-            { 
-                id: 6,
-                name: "كريستين ريناوي", 
-                category: "palestinian", 
-                institution: "تلفزيون فلسطين", 
-                city: "القدس", 
-                date: "2023-05-10", 
-                sentence: "", 
-                image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
-                details: "صحفية ومراسلة ميدانية تنقل أحداث مدينة القدس والانتهاكات المستمرة." 
-            }
-        ];
-
+        let journalistsData = [];
+        let isAdmin = false;
         let currentCategory = 'all';
         let currentCity = 'الكل';
 
-        /* دالة تسجيل دخول الأدمن بكلمة السر */
         function triggerAdminLogin() {
-            if (isAdmin) {
-                alert("أنت متصل بالفعل كـ Admin");
-                return;
-            }
-            const pass = prompt("أدخل كلمة المرور لتفعيل خيار تعديل الصور:");
-            if (pass === "1234") { // كلمة السر
+            if (isAdmin) return;
+            const pass = prompt("أدخل كلمة المرور لتفعيل وضع الأدمن:");
+            if (pass === "1234") {
                 isAdmin = true;
-                document.getElementById('uploadBtn').style.display = 'flex';
+                document.getElementById('adminBar').style.display = 'flex';
                 document.getElementById('adminBadge').style.display = 'inline-block';
-                alert("تم تفعيل وضع الأدمن بنجاح! يمكنك الآن تغيير الصور من الكروت.");
-            } else if (pass !== null) {
-                alert("كلمة المرور غير صحيحة!");
+                alert("تم تفعيل وضع الأدمن بنجاح!");
+                renderRecords();
+            } else if(pass !== null) {
+                alert("كلمة المرور غير صحيحة");
             }
         }
+
+        // جلب البيانات لحظياً من السيرفر
+        db.collection("journalists").onSnapshot((snapshot) => {
+            journalistsData = [];
+            snapshot.forEach((doc) => {
+                journalistsData.push({ id: doc.id, ...doc.data() });
+            });
+            renderRecords();
+        });
 
         function normalizeArabicText(text) {
             if (!text) return '';
             return text.toLowerCase().replace(/[أإآآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').trim();
         }
 
-        function renderRecords(customData = null) {
+        function renderRecords() {
             const container = document.getElementById('recordsContainer');
             const searchInput = document.getElementById('searchInput');
             const cleanQuery = normalizeArabicText(searchInput ? searchInput.value : '');
             
             container.innerHTML = '';
-            let list = customData || journalistsData;
 
-            let filtered = list.filter(item => {
+            let filtered = journalistsData.filter(item => {
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
                 const matchesCity = currentCity === 'الكل' || (item.city && item.city === currentCity);
                 const matchesSearch = cleanQuery === '' || 
@@ -880,11 +509,11 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة</div>';
                 return;
             }
 
-            filtered.forEach((person, index) => {
+            filtered.forEach((person) => {
                 let badgeClass = 'pill-palestinian';
                 let labelText = 'صحفي فلسطيني';
 
@@ -894,17 +523,16 @@
 
                 const card = document.createElement('div');
                 card.className = 'journalist-card';
-                card.style.animationDelay = `${index * 0.05}s`;
                 card.onclick = () => openModal(person);
 
                 card.innerHTML = `
                     <div class="card-top">
                         <div class="card-header-left">
-                            <img src="${person.image}" alt="${person.name}" class="card-avatar" crossorigin="anonymous">
+                            <img src="${person.image || 'https://via.placeholder.com/150'}" alt="${person.name}" class="card-avatar">
                             <div class="journalist-info">
-                                <h3>${person.name}</h3>
+                                <h3>${person.name || ''}</h3>
                                 <div class="meta-tags">
-                                    <span><i class="fa-solid fa-building"></i> ${person.institution}</span>
+                                    <span><i class="fa-solid fa-building"></i> ${person.institution || ''}</span>
                                     <span><i class="fa-solid fa-location-dot"></i> ${person.city || 'غير محدد'}</span>
                                 </div>
                             </div>
@@ -913,7 +541,10 @@
                     </div>
                     <div class="card-bottom">
                         <div><span><i class="fa-regular fa-calendar-alt"></i> ${person.date || '---'}</span></div>
-                        <span class="read-more-link">التفاصيل <i class="fa-solid fa-chevron-left"></i></span>
+                        <div style="display:flex; gap:8px;">
+                            ${isAdmin ? `<button onclick="event.stopPropagation(); openFormModal('${person.id}')" style="background:#eab308; color:#000; border:none; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">تعديل</button>` : ''}
+                            <span class="read-more-link" style="color:var(--accent-cyan);">التفاصيل <i class="fa-solid fa-chevron-left"></i></span>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -921,62 +552,107 @@
         }
 
         function openModal(person) {
-            selectedPerson = person;
-            document.getElementById('modalName').innerText = person.name;
+            document.getElementById('modalName').innerText = person.name || '---';
             document.getElementById('modalCity').innerText = person.city || 'غير محدد';
             document.getElementById('modalInstitution').innerText = person.institution || 'غير محدد';
             document.getElementById('modalDate').innerText = person.date || 'غير محدد';
-            document.getElementById('modalDetails').innerText = person.details;
-            document.getElementById('modalAvatar').src = person.image;
+            document.getElementById('modalDetails').innerText = person.details || '';
+            document.getElementById('modalAvatar').src = person.image || 'https://via.placeholder.com/150';
 
             const badgeEl = document.getElementById('modalCategoryBadge');
             const sentenceBox = document.getElementById('modalSentenceBox');
 
             if(person.category === 'martyr') {
-                badgeEl.className = 'category-pill pill-martyr';
-                badgeEl.innerText = 'شهيد صحفي';
+                badgeEl.className = 'category-pill pill-martyr'; badgeEl.innerText = 'شهيد صحفي';
                 sentenceBox.style.display = 'none';
             } else if(person.category === 'imprisoned') {
-                badgeEl.className = 'category-pill pill-imprisoned';
-                badgeEl.innerText = 'أسير صحفي';
+                badgeEl.className = 'category-pill pill-imprisoned'; badgeEl.innerText = 'أسير صحفي';
                 sentenceBox.style.display = 'block';
                 document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد';
+            } else if(person.category === 'wounded') {
+                badgeEl.className = 'category-pill pill-wounded'; badgeEl.innerText = 'جريح ومصاب';
+                sentenceBox.style.display = 'none';
             } else {
-                badgeEl.className = 'category-pill pill-palestinian';
-                badgeEl.innerText = 'صحفي فلسطيني';
+                badgeEl.className = 'category-pill pill-palestinian'; badgeEl.innerText = 'صحفي فلسطيني';
                 sentenceBox.style.display = 'none';
             }
-
-            // التأكد من إظهار زر الرفع فقط إذا كان المستخدم آدمن
-            document.getElementById('uploadBtn').style.display = isAdmin ? 'flex' : 'none';
 
             document.getElementById('detailModal').classList.add('show');
         }
 
-        function handleImageUpload(event) {
-            if (!isAdmin) return;
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const newImageDataUrl = e.target.result;
-                    document.getElementById('modalAvatar').src = newImageDataUrl;
-                    if (selectedPerson) {
-                        selectedPerson.image = newImageDataUrl;
-                        renderRecords();
-                    }
-                };
-                reader.readAsDataURL(file);
+        function openFormModal(id = null) {
+            if(id) {
+                const person = journalistsData.find(p => p.id === id);
+                if(!person) return;
+                document.getElementById('editPersonId').value = person.id;
+                document.getElementById('inputName').value = person.name || '';
+                document.getElementById('inputCategory').value = person.category || 'palestinian';
+                document.getElementById('inputInstitution').value = person.institution || '';
+                document.getElementById('inputCity').value = person.city || '';
+                document.getElementById('inputDate').value = person.date || '';
+                document.getElementById('inputSentence').value = person.sentence || '';
+                document.getElementById('inputDetails').value = person.details || '';
+            } else {
+                document.getElementById('editPersonId').value = '';
+                document.getElementById('inputName').value = '';
+                document.getElementById('inputInstitution').value = '';
+                document.getElementById('inputCity').value = '';
+                document.getElementById('inputDate').value = '';
+                document.getElementById('inputSentence').value = '';
+                document.getElementById('inputDetails').value = '';
             }
+            document.getElementById('formModal').classList.add('show');
+        }
+
+        function closeFormModal() { document.getElementById('formModal').classList.remove('show'); }
+
+        async function savePersonData() {
+            const id = document.getElementById('editPersonId').value;
+            const fileInput = document.getElementById('inputImageFile');
+            
+            let imageUrl = "";
+            if(fileInput.files[0]) {
+                imageUrl = await convertBase64(fileInput.files[0]);
+            }
+
+            const dataObj = {
+                name: document.getElementById('inputName').value,
+                category: document.getElementById('inputCategory').value,
+                institution: document.getElementById('inputInstitution').value,
+                city: document.getElementById('inputCity').value,
+                date: document.getElementById('inputDate').value,
+                sentence: document.getElementById('inputSentence').value,
+                details: document.getElementById('inputDetails').value,
+            };
+
+            if(imageUrl) dataObj.image = imageUrl;
+
+            if(id) {
+                await db.collection("journalists").doc(id).update(dataObj);
+            } else {
+                await db.collection("journalists").add(dataObj);
+            }
+
+            closeFormModal();
+            alert("تم الحفظ بنجاح! البيانات حُفظت بالسيرفر وتظهر لجميع الزوار.");
+        }
+
+        function convertBase64(file) {
+            return new Promise((resolve, reject) => {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = () => resolve(fileReader.result);
+                fileReader.onerror = (error) => reject(error);
+            });
         }
 
         function downloadCardImage() {
             const captureArea = document.getElementById('modalCardCapture');
-            const journalistName = document.getElementById('modalName').innerText;
+            const name = document.getElementById('modalName').innerText;
             html2canvas(captureArea, { backgroundColor: '#0f172a', useCORS: true, scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL("image/png");
-                link.download = `بطاقة_${journalistName}.png`;
+                link.download = `بطاقة_${name}.png`;
                 link.click();
             });
         }
@@ -997,8 +673,6 @@
             renderRecords();
         }
         function toggleDropdown(e) { e.stopPropagation(); document.getElementById('dropdownMenu').classList.toggle('show'); }
-
-        window.addEventListener('DOMContentLoaded', () => renderRecords());
     </script>
 </body>
 </html>
