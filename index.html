@@ -6,7 +6,6 @@
     <title>سجل الصحفيين الفلسطينيين</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- مكتبة تحويل العناصر إلى صور وتحميلها -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
@@ -60,7 +59,6 @@
             position: relative;
         }
 
-        /* ===== الهيدر العلوي ===== */
         header {
             padding: 22px 20px 16px;
             display: flex;
@@ -77,6 +75,7 @@
             gap: 10px;
         }
 
+        /* جعل اللوجو قابل للنقر لدخول الأدمن */
         .logo-icon {
             width: 36px;
             height: 36px;
@@ -88,6 +87,11 @@
             color: #fff;
             font-size: 16px;
             box-shadow: 0 4px 12px rgba(0, 102, 255, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .logo-icon:hover {
+            transform: scale(1.05);
         }
 
         .header-title-group h1 {
@@ -95,6 +99,17 @@
             font-weight: 800;
             color: var(--text-main);
             letter-spacing: -0.3px;
+        }
+
+        .admin-badge {
+            display: none;
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: bold;
         }
 
         .top-icon-btn {
@@ -117,7 +132,6 @@
             transform: rotate(90deg);
         }
 
-        /* ===== القائمة المنسدلة ===== */
         .dropdown-menu {
             position: absolute;
             top: 75px;
@@ -213,7 +227,6 @@
             color: #fff;
         }
 
-        /* ===== ترويسة الصفحة ===== */
         .project-intro { padding: 20px 20px 10px; }
         .project-tag {
             display: inline-flex;
@@ -231,7 +244,6 @@
         .project-intro h2 { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 4px; }
         .project-intro p { font-size: 12px; color: var(--text-muted); }
 
-        /* ===== شريط البحث ===== */
         .search-container { padding: 10px 20px; }
         .search-box {
             width: 100%;
@@ -259,7 +271,6 @@
             font-size: 13px;
         }
 
-        /* ===== فلاتر التبويب ===== */
         .filters-container {
             display: flex;
             gap: 8px;
@@ -301,7 +312,6 @@
             min-height: 22px;
         }
 
-        /* ===== البطاقات والأنيميشن ===== */
         .content-area {
             flex: 1;
             padding: 5px 20px 20px;
@@ -312,14 +322,8 @@
         }
 
         @keyframes cardFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(18px) scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(18px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .journalist-card {
@@ -435,13 +439,11 @@
             transform: translateX(-4px);
         }
 
-        /* ===== النافذة المنبثقة (Modal) ===== */
+        /* ===== Modal ===== */
         .modal-overlay {
-            position: fixed; /* تثبيت العنصر نسبة لفيوبورت الشاشة */
-            top: 0; 
-            left: 0;
-            width: 100vw; 
-            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
             background: rgba(5, 8, 15, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -450,15 +452,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 9999; /* لضمان الظهور فوق كل شيء */
+            z-index: 9999;
             padding: 20px;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
+        .modal-overlay.show { opacity: 1; visibility: visible; }
 
         .modal-content {
             background: linear-gradient(180deg, #131a29 0%, #0b0f19 100%);
@@ -466,8 +465,8 @@
             border-radius: 28px;
             width: 100%;
             max-width: 380px;
-            max-height: 90vh; /* تحديد أقصى ارتفاع لمنع خروج البطاقة عن الشاشة */
-            overflow-y: auto;  /* إضافة التمرير داخلياً إذا كانت البيانات طويلة */
+            max-height: 90vh;
+            overflow-y: auto;
             padding: 24px;
             display: flex;
             flex-direction: column;
@@ -478,9 +477,7 @@
             transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .modal-overlay.show .modal-content {
-            transform: scale(1) translateY(0);
-        }
+        .modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
 
         .modal-close {
             position: absolute;
@@ -501,7 +498,6 @@
             transform: rotate(90deg);
         }
 
-        /* الجزء الذي يتم تصويره وتصديره لكارت الصورة */
         .downloadable-card-area {
             background: #0f172a;
             padding: 16px;
@@ -521,6 +517,7 @@
             border-radius: 50%;
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
             padding: 3px;
+            position: relative;
         }
 
         .modal-avatar-img {
@@ -530,6 +527,24 @@
             object-fit: cover;
             background: #0d131f;
         }
+
+        /* زر الكاميرا للرفع - مخفي افتراضياً للعموم */
+        .upload-avatar-btn {
+            display: none; /* يظهر فقط عند تفعيل وضع الأدمن */
+            position: absolute;
+            bottom: 0; right: 0;
+            background: var(--accent-blue);
+            color: #fff;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #0f172a;
+            font-size: 12px;
+            transition: transform 0.2s ease;
+        }
+        .upload-avatar-btn:hover { transform: scale(1.15); }
 
         .modal-header-hero h2 {
             font-size: 19px;
@@ -598,7 +613,6 @@
             margin-top: 4px;
         }
 
-        /* زر تحميل البطاقة */
         .download-btn {
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
             color: #fff;
@@ -620,28 +634,24 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 102, 255, 0.6);
         }
-
-        .download-btn:active {
-            transform: scale(0.97);
-        }
     </style>
 </head>
 <body>
 
     <div class="phone-mockup">
-        <!-- الهيدر -->
         <header>
             <div class="header-title-group">
-                <div class="logo-icon">
+                <!-- الضغط هنا للادمن لتسجيل الدخول -->
+                <div class="logo-icon" onclick="triggerAdminLogin()" title="وضع الإدارة">
                     <i class="fa-solid fa-newspaper"></i>
                 </div>
                 <h1>عين الحقيقة</h1>
+                <span class="admin-badge" id="adminBadge">Admin</span>
             </div>
             <button class="top-icon-btn" id="menuBtn" onclick="toggleDropdown(event)">
                 <i class="fa-solid fa-sliders"></i>
             </button>
 
-            <!-- القائمة المنسدلة -->
             <div class="dropdown-menu" id="dropdownMenu">
                 <div class="dropdown-section">
                     <h4>عن المشروع</h4>
@@ -668,14 +678,12 @@
             </div>
         </header>
 
-        <!-- الترويسة -->
         <div class="project-intro">
             <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> توثيق الانتهاكات</span>
             <h2>سجل الصحفيين الفلسطينيين</h2>
             <p>سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين الفلسطينيين.</p>
         </div>
 
-        <!-- شريط البحث -->
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
@@ -683,7 +691,6 @@
             </div>
         </div>
 
-        <!-- الفلاتر -->
         <div class="filters-container">
             <button class="filter-btn active" onclick="setCategoryFilter('all', this)">الجميع</button>
             <button class="filter-btn" onclick="setCategoryFilter('palestinian', this)">الصحفيين الفلسطينيين</button>
@@ -694,7 +701,6 @@
 
         <div class="active-filter-indicator" id="activeFilterNotice"></div>
 
-        <!-- مساحة عرض البطاقات -->
         <div class="content-area" id="recordsContainer"></div>
     </div>
 
@@ -705,11 +711,16 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
             
-            <!-- الحاوية المراد تحميلها كصورة -->
             <div class="downloadable-card-area" id="modalCardCapture">
                 <div class="modal-header-hero">
                     <div class="modal-avatar-wrapper">
                         <img id="modalAvatar" class="modal-avatar-img" src="" alt="صورة الصحفي" crossorigin="anonymous">
+                        
+                        <!-- زر الرفع (يظهر فقط إذا كان تفعيل الأدمن نُفذ) -->
+                        <label for="imageUploader" class="upload-avatar-btn" id="uploadBtn" title="تغيير الصورة">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+                        <input type="file" id="imageUploader" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
                     </div>
                     <h2 id="modalName">---</h2>
                     <span id="modalCategoryBadge" class="category-pill">---</span>
@@ -745,17 +756,19 @@
                 </div>
             </div>
 
-            <!-- زر تحميل البطاقة كصورة -->
             <button class="download-btn" onclick="downloadCardImage()">
                 <i class="fa-solid fa-download"></i> تحميل البطاقة كصورة
             </button>
         </div>
     </div>
 
-    <!-- البيانات والبرمجة -->
     <script>
+        let selectedPerson = null;
+        let isAdmin = false; // الوضع الافتراضي للزوار (ليس أدمن)
+
         const journalistsData = [
             { 
+                id: 1,
                 name: "وائل الدحدوح", 
                 category: "palestinian", 
                 institution: "قناة الجزيرة", 
@@ -766,6 +779,7 @@
                 details: "صحفي ومراسل ميداني يغطي الأحداث والتطورات الميدانية والصمود الإعلامي في قطاع غزة." 
             },
             { 
+                id: 2,
                 name: "أحمد أبو حسين", 
                 category: "martyr", 
                 institution: "قناة الشعب", 
@@ -776,6 +790,7 @@
                 details: "استشهد متأثراً بإصابته أثناء تغطيته الصحفية الميدانية شرق غزة." 
             },
             { 
+                id: 3,
                 name: "احمد الناعوق", 
                 category: "wounded", 
                 institution: "شبكة عين", 
@@ -786,6 +801,7 @@
                 details: "أصيب أثناء تغطيته الأحداث القائمة في القطاع." 
             },
             { 
+                id: 4,
                 name: "محمد القيق", 
                 category: "imprisoned", 
                 institution: "صحفي حر", 
@@ -796,6 +812,7 @@
                 details: "اعتقل إدارياً لعدة أشهر بسبب نشاطه والتغطية الإعلامية." 
             },
             { 
+                id: 5,
                 name: "شيرين أبو عاقلة", 
                 category: "martyr", 
                 institution: "قناة الجزيرة", 
@@ -806,6 +823,7 @@
                 details: "استشهدت برصاصة أثناء تغطيتها لاقتحام مخيم جنين." 
             },
             { 
+                id: 6,
                 name: "كريستين ريناوي", 
                 category: "palestinian", 
                 institution: "تلفزيون فلسطين", 
@@ -814,141 +832,87 @@
                 sentence: "", 
                 image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80",
                 details: "صحفية ومراسلة ميدانية تنقل أحداث مدينة القدس والانتهاكات المستمرة." 
-            },
-            { 
-                name: "إبراهيم ملحم", 
-                category: "wounded", 
-                institution: "تلفزيون فلسطين", 
-                city: "الخليل", 
-                date: "2020-08-04", 
-                sentence: "", 
-                image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
-                details: "أصيب بقنبلة غاز بشكل مباشر أثناء التغطية." 
-            },
-            { 
-                name: "علي السمودي", 
-                category: "imprisoned", 
-                institution: "صحيفة الأيام", 
-                city: "جنين", 
-                date: "2023-09-10", 
-                sentence: "موقوف لغاية المحاكمة", 
-                image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
-                details: "تم اعتقاله أثناء مداهمة منزله في جنين." 
             }
         ];
 
         let currentCategory = 'all';
         let currentCity = 'الكل';
 
-        function normalizeArabicText(text) {
-            if (!text) return '';
-            return text
-                .toLowerCase()
-                .replace(/[أإآآ]/g, 'ا')
-                .replace(/ة/g, 'ه')
-                .replace(/ى/g, 'ي')
-                .replace(/[\u064B-\u0652]/g, '')
-                .trim();
+        /* دالة تسجيل دخول الأدمن بكلمة السر */
+        function triggerAdminLogin() {
+            if (isAdmin) {
+                alert("أنت متصل بالفعل كـ Admin");
+                return;
+            }
+            const pass = prompt("أدخل كلمة المرور لتفعيل خيار تعديل الصور:");
+            if (pass === "1234") { // كلمة السر
+                isAdmin = true;
+                document.getElementById('uploadBtn').style.display = 'flex';
+                document.getElementById('adminBadge').style.display = 'inline-block';
+                alert("تم تفعيل وضع الأدمن بنجاح! يمكنك الآن تغيير الصور من الكروت.");
+            } else if (pass !== null) {
+                alert("كلمة المرور غير صحيحة!");
+            }
         }
 
-        function shuffleArray(array) {
-            let shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
+        function normalizeArabicText(text) {
+            if (!text) return '';
+            return text.toLowerCase().replace(/[أإآآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').trim();
         }
 
         function renderRecords(customData = null) {
             const container = document.getElementById('recordsContainer');
             const searchInput = document.getElementById('searchInput');
-            
-            const rawSearchQuery = searchInput ? searchInput.value : '';
-            const cleanQuery = normalizeArabicText(rawSearchQuery);
+            const cleanQuery = normalizeArabicText(searchInput ? searchInput.value : '');
             
             container.innerHTML = '';
-
-            let list = customData || ((typeof journalistsData !== 'undefined') ? journalistsData : []);
+            let list = customData || journalistsData;
 
             let filtered = list.filter(item => {
-                if (!item) return false;
-
                 const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
                 const matchesCity = currentCity === 'الكل' || (item.city && item.city === currentCity);
-                
-                const cleanName = normalizeArabicText(item.name);
-                const cleanInstitution = normalizeArabicText(item.institution);
-                const cleanCity = normalizeArabicText(item.city);
-
                 const matchesSearch = cleanQuery === '' || 
-                    cleanName.includes(cleanQuery) || 
-                    cleanInstitution.includes(cleanQuery) || 
-                    cleanCity.includes(cleanQuery);
+                    normalizeArabicText(item.name).includes(cleanQuery) || 
+                    normalizeArabicText(item.institution).includes(cleanQuery) || 
+                    normalizeArabicText(item.city).includes(cleanQuery);
 
                 return matchesCategory && matchesCity && matchesSearch;
             });
 
-            let noticeText = '';
-            if (currentCity !== 'الكل') noticeText += `تصفية حسب المدينة: ${currentCity}`;
-            document.getElementById('activeFilterNotice').innerText = noticeText;
-
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px; animation: cardFadeIn 0.3s ease forwards;">لا توجد سجلات مطابقة للبحث</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث</div>';
                 return;
             }
 
             filtered.forEach((person, index) => {
-                let badgeClass = '';
-                let labelText = '';
+                let badgeClass = 'pill-palestinian';
+                let labelText = 'صحفي فلسطيني';
 
-                if(person.category === 'palestinian') {
-                    badgeClass = 'pill-palestinian';
-                    labelText = 'صحفي فلسطيني';
-                } else if(person.category === 'martyr') { 
-                    badgeClass = 'pill-martyr'; 
-                    labelText = 'شهيد صحفي';
-                } else if(person.category === 'imprisoned') { 
-                    badgeClass = 'pill-imprisoned'; 
-                    labelText = 'أسير صحفي';
-                } else if(person.category === 'wounded') { 
-                    badgeClass = 'pill-wounded'; 
-                    labelText = 'جريح ومصاب';
-                }
+                if(person.category === 'martyr') { badgeClass = 'pill-martyr'; labelText = 'شهيد صحفي'; }
+                else if(person.category === 'imprisoned') { badgeClass = 'pill-imprisoned'; labelText = 'أسير صحفي'; }
+                else if(person.category === 'wounded') { badgeClass = 'pill-wounded'; labelText = 'جريح ومصاب'; }
 
                 const card = document.createElement('div');
                 card.className = 'journalist-card';
                 card.style.animationDelay = `${index * 0.05}s`;
                 card.onclick = () => openModal(person);
-                
-                const displayCity = person.city ? person.city : 'غير محدد';
-                const displayDate = person.date ? person.date : '---';
-                const avatarSrc = person.image || 'https://via.placeholder.com/150';
-
-                let sentenceBadgeHtml = '';
-                if(person.category === 'imprisoned' && person.sentence) {
-                    sentenceBadgeHtml = `<span class="sentence-tag"><i class="fa-solid fa-gavel"></i> ${person.sentence}</span>`;
-                }
 
                 card.innerHTML = `
                     <div class="card-top">
                         <div class="card-header-left">
-                            <img src="${avatarSrc}" alt="${person.name}" class="card-avatar" crossorigin="anonymous">
+                            <img src="${person.image}" alt="${person.name}" class="card-avatar" crossorigin="anonymous">
                             <div class="journalist-info">
                                 <h3>${person.name}</h3>
                                 <div class="meta-tags">
                                     <span><i class="fa-solid fa-building"></i> ${person.institution}</span>
-                                    <span><i class="fa-solid fa-location-dot"></i> ${displayCity}</span>
+                                    <span><i class="fa-solid fa-location-dot"></i> ${person.city || 'غير محدد'}</span>
                                 </div>
                             </div>
                         </div>
                         <span class="category-pill ${badgeClass}">${labelText}</span>
                     </div>
                     <div class="card-bottom">
-                        <div>
-                            <span><i class="fa-regular fa-calendar-alt"></i> ${displayDate}</span>
-                            ${sentenceBadgeHtml}
-                        </div>
+                        <div><span><i class="fa-regular fa-calendar-alt"></i> ${person.date || '---'}</span></div>
                         <span class="read-more-link">التفاصيل <i class="fa-solid fa-chevron-left"></i></span>
                     </div>
                 `;
@@ -957,23 +921,18 @@
         }
 
         function openModal(person) {
+            selectedPerson = person;
             document.getElementById('modalName').innerText = person.name;
             document.getElementById('modalCity').innerText = person.city || 'غير محدد';
             document.getElementById('modalInstitution').innerText = person.institution || 'غير محدد';
             document.getElementById('modalDate').innerText = person.date || 'غير محدد';
             document.getElementById('modalDetails').innerText = person.details;
-            
-            const avatarImg = document.getElementById('modalAvatar');
-            avatarImg.src = person.image || 'https://via.placeholder.com/150';
+            document.getElementById('modalAvatar').src = person.image;
 
             const badgeEl = document.getElementById('modalCategoryBadge');
             const sentenceBox = document.getElementById('modalSentenceBox');
 
-            if(person.category === 'palestinian') {
-                badgeEl.className = 'category-pill pill-palestinian';
-                badgeEl.innerText = 'صحفي فلسطيني';
-                sentenceBox.style.display = 'none';
-            } else if(person.category === 'martyr') {
+            if(person.category === 'martyr') {
                 badgeEl.className = 'category-pill pill-martyr';
                 badgeEl.innerText = 'شهيد صحفي';
                 sentenceBox.style.display = 'none';
@@ -982,100 +941,64 @@
                 badgeEl.innerText = 'أسير صحفي';
                 sentenceBox.style.display = 'block';
                 document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد';
-            } else if(person.category === 'wounded') {
-                badgeEl.className = 'category-pill pill-wounded';
-                badgeEl.innerText = 'جريح ومصاب';
+            } else {
+                badgeEl.className = 'category-pill pill-palestinian';
+                badgeEl.innerText = 'صحفي فلسطيني';
                 sentenceBox.style.display = 'none';
             }
+
+            // التأكد من إظهار زر الرفع فقط إذا كان المستخدم آدمن
+            document.getElementById('uploadBtn').style.display = isAdmin ? 'flex' : 'none';
 
             document.getElementById('detailModal').classList.add('show');
         }
 
-        /* دالة تحميل بطاقة الصحفي كصورة */
+        function handleImageUpload(event) {
+            if (!isAdmin) return;
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newImageDataUrl = e.target.result;
+                    document.getElementById('modalAvatar').src = newImageDataUrl;
+                    if (selectedPerson) {
+                        selectedPerson.image = newImageDataUrl;
+                        renderRecords();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function downloadCardImage() {
             const captureArea = document.getElementById('modalCardCapture');
             const journalistName = document.getElementById('modalName').innerText;
-            const downloadBtn = document.querySelector('.download-btn');
-
-            const originalBtnText = downloadBtn.innerHTML;
-            downloadBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوليد...';
-            downloadBtn.disabled = true;
-
-            html2canvas(captureArea, {
-                backgroundColor: '#0f172a',
-                useCORS: true,
-                allowTaint: false,
-                scale: 2,
-                logging: false
-            }).then(canvas => {
-                const image = canvas.toDataURL("image/png");
+            html2canvas(captureArea, { backgroundColor: '#0f172a', useCORS: true, scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.href = image;
-                link.download = `بطاقة_${journalistName.replace(/\s+/g, '_')}.png`;
-                document.body.appendChild(link);
+                link.href = canvas.toDataURL("image/png");
+                link.download = `بطاقة_${journalistName}.png`;
                 link.click();
-                document.body.removeChild(link);
-
-                downloadBtn.innerHTML = originalBtnText;
-                downloadBtn.disabled = false;
-            }).catch(err => {
-                console.error("خطأ أثناء حفظ الصورة:", err);
-                alert("حدث خطأ أثناء حفظ الصورة، يرجى التأكد من استضافة الصور محلياً.");
-                downloadBtn.innerHTML = originalBtnText;
-                downloadBtn.disabled = false;
             });
         }
 
-        function closeModal() {
-            document.getElementById('detailModal').classList.remove('show');
-        }
-
-        function closeModalOnOutside(event) {
-            if (event.target.id === 'detailModal') {
-                closeModal();
-            }
-        }
-
+        function closeModal() { document.getElementById('detailModal').classList.remove('show'); }
+        function closeModalOnOutside(e) { if (e.target.id === 'detailModal') closeModal(); }
         function setCategoryFilter(cat, btn) {
             currentCategory = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
+            if(btn) btn.classList.add('active');
             renderRecords();
         }
-
         function setCityFilter(city, el) {
             currentCity = city;
             document.querySelectorAll('.city-tag').forEach(t => t.classList.remove('active'));
-            if (el) el.classList.add('active');
-            const menu = document.getElementById('dropdownMenu');
-            if (menu) menu.classList.remove('show');
+            if(el) el.classList.add('active');
+            document.getElementById('dropdownMenu').classList.remove('show');
             renderRecords();
         }
+        function toggleDropdown(e) { e.stopPropagation(); document.getElementById('dropdownMenu').classList.toggle('show'); }
 
-        function toggleDropdown(event) {
-            if (event) event.stopPropagation();
-            const menu = document.getElementById('dropdownMenu');
-            if (menu) menu.classList.toggle('show');
-        }
-
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('dropdownMenu');
-            const menuBtn = document.getElementById('menuBtn');
-            if (menu && menu.classList.contains('show')) {
-                if (!menu.contains(event.target) && !menuBtn.contains(event.target)) {
-                    menu.classList.remove('show');
-                }
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            if (typeof journalistsData !== 'undefined' && journalistsData.length > 0) {
-                const randomizedData = shuffleArray(journalistsData);
-                renderRecords(randomizedData);
-            } else {
-                renderRecords();
-            }
-        });
+        window.addEventListener('DOMContentLoaded', () => renderRecords());
     </script>
 </body>
 </html>
