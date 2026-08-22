@@ -3,974 +3,612 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="google-site-verification" content="CPGrqBveMH0hfyyo5ob9plnh9qkCF95W3pxLx8mKnEQ" />
-
-    <title>عين الحقيقة | سجل الصحفيين الفلسطينيين</title>
-    <meta name="description" content="منصة وثائقية رقمية لتكريم وتوثيق شهادات الصحفيين الفلسطينيين، والشهداء، والأسرى، والجرحى.">
-    <meta name="keywords" content="press-pall, عين الحقيقة, صحفيين فلسطين, شهداء الصحافة, أسرى الصحافة, غزة, جنين">
-    <meta name="author" content="عين الحقيقة">
-    <meta name="robots" content="index, follow">
-
-    <meta property="og:title" content="عين الحقيقة | سجل الصحفيين الفلسطينيين">
-    <meta property="og:description" content="سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين الفلسطينيين.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://press-pall.netlify.app">
-
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <title>أرشيف الصحفيين - توثيق الحقيقة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
     <style>
         :root {
-            --bg-dark: #090d16;
-            --bg-card: rgba(18, 24, 38, 0.7);
-            --bg-card-hover: rgba(26, 35, 54, 0.85);
-            --border-glow: rgba(0, 102, 255, 0.35);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            
-            --accent-blue: #0066ff;
-            --accent-cyan: #38bdf8;
+            --bg-deep: #07090e;
+            --bg-card: #10141d;
+            --border-subtle: #222736;
+            --accent-blue: #0055ff;
+            --accent-glow: rgba(0, 85, 255, 0.25);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-
-            --red-glow: #ef4444;
-            --yellow-glow: #eab308;
-            --blue-glow: #3b82f6;
-            --green-glow: #10b981;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-deep);
             color: var(--text-main);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
             direction: rtl;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 40%);
+            text-align: right;
         }
 
-        /* تعديل الحاوية لتكون بعرض الشاشة الكامل وبدون حواف هاتف */
-        .full-page-container {
+        .phone-mockup {
             width: 100%;
-            max-width: 1200px; /* يعطي مظهر أنيق وجذاب على الشاشات الكبيرة مع التمركز */
-            margin: 0 auto;
-            min-height: 100vh;
+            max-width: 440px;
+            background: radial-gradient(circle at top, rgba(0, 85, 255, 0.12) 0%, rgba(7, 9, 14, 0) 70%), var(--bg-deep);
+            border-radius: 35px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 85, 255, 0.1);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
+            min-height: 850px;
             position: relative;
-            padding: 0 15px;
         }
 
+        /* الهيدر العلوي */
         header {
-            padding: 22px 20px;
-            margin-bottom: 5px;
+            padding: 24px 20px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-subtle);
             position: relative;
             z-index: 50;
-            background: rgba(255, 255, 255, 0.01);
-        }
-
-        .header-title-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 42px;
-            height: 42px;
-            background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(56, 189, 248, 0.2));
-            border: 1px solid rgba(56, 189, 248, 0.4);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--accent-cyan);
-            font-size: 18px;
-            box-shadow: 0 0 15px rgba(0, 102, 255, 0.25);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .logo-icon:hover {
-            transform: scale(1.06);
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 22px rgba(56, 189, 248, 0.4);
-            color: #fff;
-        }
-
-        .brand-title-wrapper {
-            display: flex;
-            flex-direction: column;
         }
 
         .header-title-group h1 {
             font-size: 20px;
             font-weight: 900;
-            letter-spacing: -0.2px;
-            background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            color: var(--text-main);
         }
-
-        .brand-subtitle {
-            font-size: 10px;
-            color: var(--text-muted);
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-top: -1px;
-        }
-
-        .admin-badge {
-            display: none;
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: bold;
+        .header-title-group h1 span {
+            color: var(--accent-blue);
         }
 
         .top-icon-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-subtle);
             color: var(--text-muted);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .top-icon-btn:hover {
-            background: rgba(0, 102, 255, 0.15);
-            color: #fff;
-            border-color: var(--accent-blue);
-            transform: rotate(90deg);
         }
 
-        .admin-controls {
-            display: none;
-            gap: 8px;
-            padding: 10px 20px 0;
-        }
-        .admin-btn {
-            background: var(--accent-blue);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-            font-size: 13px;
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
-        }
-
+        /* القائمة المنسدلة للثلاث نقاط (جهة اليسار) */
         .dropdown-menu {
             position: absolute;
             top: 75px;
             left: 20px;
-            background: rgba(15, 22, 35, 0.98);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            width: 310px;
-            max-height: 80vh;
-            overflow-y: auto;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-12px) scale(0.95);
-            display: flex;
+            background: #131824;
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            width: 280px;
+            display: none;
             flex-direction: column;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
             z-index: 1000;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
         }
 
         .dropdown-menu.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
+            display: flex;
         }
 
         .dropdown-section {
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-subtle);
             font-size: 12px;
         }
         .dropdown-section:last-child { border-bottom: none; }
         .dropdown-section h4 {
-            color: var(--accent-cyan);
-            margin-bottom: 8px;
-            font-size: 12px;
+            color: var(--accent-blue);
+            margin-bottom: 6px;
+            font-size: 13px;
             font-weight: 700;
-            text-transform: uppercase;
         }
-
-        .bio-text { color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; font-size: 12px; }
-
-        .email-link {
-            color: #fff;
-            background: rgba(0, 102, 255, 0.15);
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            word-break: break-all;
-        }
-
-        .filter-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
-        .grid-tag {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border-subtle);
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 11px;
+        .dropdown-section p {
             color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
+            line-height: 1.5;
         }
-        .grid-tag.active { background: var(--accent-blue); border-color: var(--accent-blue); color: #fff; }
 
-        .project-intro { 
-            padding: 20px 20px 10px; 
-            text-align: center;
+        .cities-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .city-tag {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-subtle);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .city-tag:hover, .city-tag.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #fff;
+        }
+
+        /* ترويسة المشروع */
+        .project-intro {
+            padding: 20px 20px 10px;
         }
         .project-tag {
-            display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(0, 102, 255, 0.1); color: var(--accent-cyan);
-            font-size: 12px; padding: 6px 14px; border-radius: 20px;
-            border: 1px solid rgba(0, 102, 255, 0.2); margin-bottom: 12px; font-weight: 600;
+            display: inline-block;
+            background: rgba(0, 85, 255, 0.15);
+            color: #60a5fa;
+            font-size: 10px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 85, 255, 0.3);
+            margin-bottom: 8px;
         }
-        .project-intro h2 { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 8px; }
-        .project-intro p { font-size: 14px; color: var(--text-muted); }
+        .project-intro h2 {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .project-intro p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
 
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 12px;
-            padding: 15px 20px;
+        /* شريط البحث */
+        .search-container {
+            padding: 10px 20px;
         }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 12px 8px;
-            text-align: center;
-        }
-        .stat-card .stat-value { font-size: 20px; font-weight: 800; color: #fff; }
-        .stat-card .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-        .stat-card.martyr .stat-value { color: #f87171; }
-        .stat-card.imprisoned .stat-value { color: #facc15; }
-        .stat-card.wounded .stat-value { color: #60a5fa; }
-
-        .search-container { padding: 10px 20px; }
         .search-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle); border-radius: 16px;
-            padding: 14px 18px; color: #fff; display: flex; align-items: center; gap: 12px;
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .search-box input { background: none; border: none; color: #fff; outline: none; width: 100%; font-size: 14px; }
+        .search-box input {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+            text-align: right;
+        }
+        .search-box input::placeholder { color: #64748b; }
 
-        .filters-container { display: flex; gap: 10px; padding: 5px 20px 15px; overflow-x: auto; scrollbar-width: none; }
+        /* فلاتر التصنيفات تحت البحث */
+        .filters-container {
+            display: flex;
+            gap: 8px;
+            padding: 5px 20px 15px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            justify-content: flex-start;
+        }
         .filters-container::-webkit-scrollbar { display: none; }
 
         .filter-btn {
-            background: rgba(255, 255, 255, 0.03); color: var(--text-muted);
-            border: 1px solid var(--border-subtle); padding: 10px 18px;
-            border-radius: 14px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
-            transition: all 0.2s;
-        }
-        .filter-btn.active { background: var(--accent-blue); color: #ffffff; border-color: var(--accent-blue); }
-
-        /* تقسيم البطاقات كشبكة (Grid) متناسبة مع الشاشات الواسعة */
-        .content-area { 
-            flex: 1; 
-            padding: 10px 20px 30px; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-            gap: 20px; 
-        }
-
-        .card-3d-wrapper {
-            perspective: 1000px;
-            width: 100%;
-        }
-        .card-3d-inner {
-            position: relative;
-            width: 100%;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-        }
-        .card-3d-wrapper.flipped .card-3d-inner {
-            transform: rotateY(180deg);
-        }
-        
-        .card-front, .card-back {
-            background: var(--bg-card);
+            background-color: var(--bg-card);
+            color: var(--text-muted);
             border: 1px solid var(--border-subtle);
-            border-radius: 20px;
-            padding: 18px 20px;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            min-height: 140px;
-        }
-        
-        .card-front:hover, .card-back:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-glow);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
         }
 
-        .card-back {
+        .filter-btn.active {
+            background-color: var(--accent-blue);
+            color: #ffffff;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px var(--accent-glow);
+            font-weight: 700;
+        }
+
+        .active-filter-indicator {
+            padding: 0 20px 8px;
+            font-size: 11px;
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        /* منطقة البطاقات */
+        .content-area {
+            flex: 1;
+            padding: 5px 20px 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* تصميم البطاقة الصحفية */
+        .journalist-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .journalist-card:hover {
+            border-color: rgba(0, 85, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .card-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .category-badge-small {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+        .badge-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-imprisoned { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .badge-wounded { background: rgba(0, 85, 255, 0.15); color: #60a5fa; border: 1px solid rgba(0, 85, 255, 0.3); }
+
+        .journalist-info h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+        .journalist-info span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .card-action-btn {
+            background: rgba(0, 85, 255, 0.1);
+            border: 1px solid rgba(0, 85, 255, 0.3);
+            color: #60a5fa;
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .card-action-btn:hover {
+            background: var(--accent-blue);
+            color: #fff;
+        }
+
+        /* نافذة التفاصيل المنبثقة (Modal) */
+        .modal-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            transform: rotateY(180deg);
+            background: rgba(7, 9, 14, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 380px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            background: rgba(15, 23, 42, 0.95);
-        }
-
-        .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-        .card-header-left { display: flex; align-items: center; gap: 12px; }
-        .card-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue); background: #0d131f; }
-
-        .journalist-info h3 { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-        .meta-tags { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-muted); }
-
-        .category-pill { font-size: 10px; padding: 4px 10px; border-radius: 30px; font-weight: 700; white-space: nowrap; }
-        .pill-palestinian { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .pill-martyr { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .pill-imprisoned { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
-        .pill-wounded { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-
-        .card-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.04); font-size: 11px; color: var(--text-muted); margin-top: 10px; }
-
-        .flip-btn {
-            background: rgba(0, 102, 255, 0.15);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .back-story-p {
-            font-size: 12px;
-            color: #cbd5e1;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-top: 6px;
-        }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(5, 8, 15, 0.85); backdrop-filter: blur(12px);
-            opacity: 0; visibility: hidden; display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 20px; transition: 0.3s;
-        }
-        .modal-overlay.show { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: #131a29; border: 1px solid var(--border-glow); border-radius: 28px;
-            width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; padding: 24px;
-            display: flex; flex-direction: column; gap: 14px; position: relative;
+            gap: 14px;
+            position: relative;
+            text-align: right;
         }
 
         .modal-close {
-            position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-subtle); color: var(--text-muted); width: 34px; height: 34px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
         }
 
-        .downloadable-card-area { background: #0f172a; padding: 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column; gap: 12px; }
-        .modal-header-hero { text-align: center; }
-        
-        .modal-avatar-wrapper { 
-            width: 120px; 
-            height: 120px; 
-            margin: 0 auto 12px; 
-            border-radius: 50%; 
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); 
-            padding: 3px; 
-            position: relative;
-            box-shadow: 0 8px 24px rgba(0, 102, 255, 0.3);
+        .modal-image-container {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #1e2536;
+            margin: 0 auto;
+            overflow: hidden;
+            border: 2px solid var(--accent-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .modal-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #0d131f; }
 
-        .modal-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 14px; border: 1px solid var(--border-subtle); }
-        .info-box label { font-size: 10px; color: var(--text-muted); display: block; }
-        .info-box span { font-size: 11px; font-weight: 700; color: #fff; }
+        .modal-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        .modal-story-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 12px; }
-        .modal-story-box h4 { font-size: 11px; color: var(--accent-cyan); margin-bottom: 4px; }
-        .modal-story-box p { font-size: 11px; color: #cbd5e1; line-height: 1.6; max-height: 120px; overflow-y: auto; }
+        .modal-header-info { text-align: center; }
+        .modal-header-info h2 { font-size: 18px; color: var(--text-main); margin-bottom: 2px; }
+        .modal-header-info .modal-city { font-size: 11px; color: var(--accent-blue); font-weight: 700; margin-bottom: 2px; display: block; }
+        .modal-header-info span { font-size: 12px; color: var(--text-muted); }
 
-        .card-watermark { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-muted); border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; }
-
-        .action-btns-group { display: flex; gap: 10px; margin-top: 4px; }
-        .download-btn { flex: 1; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #fff; border: none; border-radius: 14px; padding: 12px 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; }
-        .pdf-btn { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
-
-        .form-modal-content input, .form-modal-content select, .form-modal-content textarea {
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: white; padding: 10px; border-radius: 10px; font-size: 12px; width: 100%; margin-top: 6px;
+        .modal-body-text {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.7;
+            background: rgba(0,0,0,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            max-height: 200px;
+            overflow-y: auto;
         }
     </style>
 </head>
 <body>
 
-    <div class="full-page-container">
+    <div class="phone-mockup">
+        <!-- الهيدر العلوي -->
         <header>
             <div class="header-title-group">
-                <div class="logo-icon" onclick="triggerAdminLogin()" title="وضع الإدارة">
-                    <i class="fa-solid fa-eye"></i>
-                </div>
-                <div class="brand-title-wrapper">
-                    <h1>عين الحقيقة</h1>
-                    <span class="brand-subtitle">VERITAS EYE</span>
-                </div>
-                <span class="admin-badge" id="adminBadge">Admin</span>
+                <h1>أرشيف <span>الصحفيين</span></h1>
             </div>
             <button class="top-icon-btn" id="menuBtn" onclick="toggleDropdown(event)">
-                <i class="fa-solid fa-sliders"></i>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
             </button>
 
+            <!-- القائمة المنسدلة (جهة اليسار) -->
             <div class="dropdown-menu" id="dropdownMenu">
                 <div class="dropdown-section">
-                    <h4>عن المشروع</h4>
-                    <p class="bio-text">منصة توثيقية تهدف للتوثيق الرقمي وتكريم الصحفيين الفلسطينيين.</p>
-                    <a href="mailto:jjenin0011@gmail.com" class="email-link">
-                        <i class="fa-regular fa-envelope"></i> jjenin0011@gmail.com
-                    </a>
+                    <h4>للتواصل معنا</h4>
+                    <p>jjenin0011@gmail.com</p>
                 </div>
-
                 <div class="dropdown-section">
-                    <h4>تصفية حسب المدينة</h4>
-                    <div class="filter-grid" id="citiesContainer">
-                        <span class="grid-tag active" onclick="setCityFilter('الكل', this)">الكل</span>
-                        <span class="grid-tag" onclick="setCityFilter('غزة', this)">غزة</span>
-                        <span class="grid-tag" onclick="setCityFilter('جنين', this)">جنين</span>
-                        <span class="grid-tag" onclick="setCityFilter('الخليل', this)">الخليل</span>
-                        <span class="grid-tag" onclick="setCityFilter('نابلس', this)">نابلس</span>
-                        <span class="grid-tag" onclick="setCityFilter('رام الله', this)">رام الله</span>
-                        <span class="grid-tag" onclick="setCityFilter('القدس', this)">القدس</span>
+                    <h4>فرز حسب المدينة</h4>
+                    <div class="cities-grid">
+                        <span class="city-tag active" onclick="setCityFilter('الكل', this)">الكل</span>
+                        <span class="city-tag" onclick="setCityFilter('جنين', this)">جنين</span>
+                        <span class="city-tag" onclick="setCityFilter('نابلس', this)">نابلس</span>
+                        <span class="city-tag" onclick="setCityFilter('غزة', this)">غزة</span>
+                        <span class="city-tag" onclick="setCityFilter('رام الله', this)">رام الله</span>
+                        <span class="city-tag" onclick="setCityFilter('الخليل', this)">الخليل</span>
+                        <span class="city-tag" onclick="setCityFilter('طولكرم', this)">طولكرم</span>
+                        <span class="city-tag" onclick="setCityFilter('قلقيلية', this)">قلقيلية</span>
+                        <span class="city-tag" onclick="setCityFilter('سلفيت', this)">سلفيت</span>
+                        <span class="city-tag" onclick="setCityFilter('طوباس', this)">طوباس</span>
+                        <span class="city-tag" onclick="setCityFilter('بيت لحم', this)">بيت لحم</span>
+                        <span class="city-tag" onclick="setCityFilter('أريحا', this)">أريحا</span>
                     </div>
                 </div>
-
                 <div class="dropdown-section">
-                    <h4>تصفية حسب العام</h4>
-                    <div class="filter-grid" id="yearsContainer">
-                        <span class="grid-tag active" onclick="setYearFilter('all', this)">كل الأعوام</span>
-                    </div>
+                    <h4>نبذة عنا</h4>
+                    <p>أنا طالبة إعلام وتكنولوجيا، أعمل على هذا المشروع التوثيقي الرقمي لنقل وتخليد حكايات وتضحيات الصحفيين في فلسطين ولتبقى الحقيقة حاضرة.</p>
                 </div>
             </div>
         </header>
 
-        <div class="admin-controls" id="adminBar">
-            <button class="admin-btn" onclick="openFormModal()"><i class="fa-solid fa-plus"></i> إضافة صحفي جديد</button>
-        </div>
-
+        <!-- ترويسة المشروع -->
         <div class="project-intro">
-            <span class="project-tag"><i class="fa-solid fa-shield-halved"></i> توثيق الانتهاكات</span>
-            <h2>سجل الصحفيين الفلسطينيين</h2>
-            <p>سجل وثائقي لحماية الحقيقة وحفظ شهادات الصحفيين الفلسطينيين.</p>
+            <span class="project-tag">توثيق الحقيقة</span>
+            <h2>سجل التضحيات الصحفية</h2>
+            <p>«اضغط على بطاقة أي صحفي لاستعراض سيرته وحكايته.»</p>
         </div>
 
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-value" id="statTotal">0</div>
-                <div class="stat-label">المجموع</div>
-            </div>
-            <div class="stat-card martyr">
-                <div class="stat-value" id="statMartyrs">0</div>
-                <div class="stat-label">شهداء</div>
-            </div>
-            <div class="stat-card imprisoned">
-                <div class="stat-value" id="statImprisoned">0</div>
-                <div class="stat-label">أسرى</div>
-            </div>
-            <div class="stat-card wounded">
-                <div class="stat-value" id="statWounded">0</div>
-                <div class="stat-label">جرحى</div>
-            </div>
-        </div>
-
+        <!-- شريط البحث -->
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي، المؤسسة..." oninput="renderRecords()">
+                <input type="text" id="searchInput" placeholder="ابحث باسم الصحفي أو المؤسسة..." oninput="renderRecords()">
             </div>
         </div>
 
+        <!-- فلاتر التصنيفات الأساسية -->
         <div class="filters-container">
-            <button class="filter-btn active" onclick="setCategoryFilter('all', this)">الجميع</button>
-            <button class="filter-btn" onclick="setCategoryFilter('palestinian', this)">الصحفيين الفلسطينيين</button>
-            <button class="filter-btn" onclick="setCategoryFilter('martyr', this)">الشهداء</button>
-            <button class="filter-btn" onclick="setCategoryFilter('imprisoned', this)">الأسرى</button>
-            <button class="filter-btn" onclick="setCategoryFilter('wounded', this)">الجرحى</button>
+            <button class="filter-btn active" onclick="setCategoryFilter('all', this)">الكل</button>
+            <button class="filter-btn" onclick="setCategoryFilter('martyr', this)">شهداء صحفيين</button>
+            <button class="filter-btn" onclick="setCategoryFilter('imprisoned', this)">أسرى صحفيين</button>
+            <button class="filter-btn" onclick="setCategoryFilter('wounded', this)">جرحى ومصابين</button>
         </div>
 
+        <div id="activeFilterNotice" class="active-filter-indicator"></div>
+
+        <!-- مساحة عرض السجلات -->
         <div class="content-area" id="recordsContainer"></div>
-    </div>
 
-    <div class="modal-overlay" id="detailModal" onclick="closeModalOnOutside(event)">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            
-            <div class="downloadable-card-area" id="modalCardCapture">
-                <div class="modal-header-hero">
-                    <div class="modal-avatar-wrapper">
-                        <img id="modalAvatar" class="modal-avatar-img" src="" alt="صورة الصحفي">
-                    </div>
-                    <h2 id="modalName">---</h2>
-                    <span id="modalCategoryBadge" class="category-pill">---</span>
+        <!-- نافذة التفاصيل المنبثقة (Modal) -->
+        <div class="modal-overlay" id="detailModal" onclick="closeModalOnOutside(event)">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                <div class="modal-image-container">
+                    <img id="modalImg" src="" alt="صورة الصحفي" onerror="this.src='https://via.placeholder.com/90?text=Press'">
                 </div>
-                
-                <div class="modal-info-grid">
-                    <div class="info-box"><label>المؤسسة الإعلامية</label><span id="modalInstitution">---</span></div>
-                    <div class="info-box"><label>المدينة / الموقع</label><span id="modalCity">---</span></div>
-                    <div class="info-box" id="modalDateBox"><label id="modalDateLabel">تاريخ التوثيق</label><span id="modalDate">---</span></div>
-                    <div class="info-box" id="modalSentenceBox"><label>الحكم القضائي</label><span id="modalSentence" style="color: #facc15;">---</span></div>
+                <div class="modal-header-info">
+                    <h2 id="modalName">اسم الصحفي</h2>
+                    <span id="modalCity" class="modal-city">المدينة</span>
+                    <span id="modalInstitution">المؤسسة</span>
                 </div>
-
-                <div class="modal-story-box">
-                    <h4><i class="fa-solid fa-file-lines"></i> <span id="modalStoryTitle">التفاصيل والمعلومات</span></h4>
-                    <p id="modalDetails">---</p>
-                </div>
-
-                <div class="card-watermark">
-                    <span><i class="fa-solid fa-newspaper"></i> عين الحقيقة - سجل الصحفيين</span>
-                    <span>وثيقة رقمية</span>
+                <div class="modal-body-text" id="modalDetails">
+                    التفاصيل الكاملة...
                 </div>
             </div>
-
-            <div class="action-btns-group">
-                <button class="download-btn" onclick="downloadCardImage()"><i class="fa-solid fa-image"></i> حفظ كصورة</button>
-                <button class="download-btn pdf-btn" onclick="downloadPDFReport()"><i class="fa-solid fa-file-pdf"></i> تصدير PDF</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="formModal">
-        <div class="modal-content form-modal-content">
-            <button class="modal-close" onclick="closeFormModal()"><i class="fa-solid fa-xmark"></i></button>
-            <h3 id="formTitle" style="color: #fff;">إضافة / تعديل صحفي</h3>
-            <input type="hidden" id="editPersonId">
-            <input type="text" id="inputName" placeholder="الاسم الكامل">
-            <select id="inputCategory" onchange="updateFormDateFieldLabel()">
-                <option value="palestinian">صحفي فلسطيني</option>
-                <option value="martyr">شهيد</option>
-                <option value="imprisoned">أسير</option>
-                <option value="wounded">جريح</option>
-            </select>
-            <input type="text" id="inputInstitution" placeholder="المؤسسة الإعلامية">
-            <input type="text" id="inputCity" placeholder="المدينة (مثال: غزة، جنين)">
-            
-            <label id="inputDateLabel" style="color:#aaa; font-size:11px; margin-top:6px; display:block;">تاريخ التوثيق:</label>
-            <input type="text" id="inputDate" placeholder="التاريخ (مثال: 2023-10-15)">
-            
-            <input type="text" id="inputSentence" placeholder="الحكم (إن وجد للأسرى)">
-            <textarea id="inputDetails" placeholder="التفاصيل والمعلومات"></textarea>
-            
-            <label style="color:#fff; font-size:12px; margin-top:8px;">اختر صورة الشخص:</label>
-            <input type="file" id="inputImageFile" accept="image/*">
-            
-            <button class="admin-btn" style="margin-top:10px;" onclick="savePersonData()">حفظ للجميع</button>
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyAvUavBuk4mMfqqUqeebZGzRliD9NWE080",
-            authDomain: "journalists-c4c17.firebaseapp.com",
-            projectId: "journalists-c4c17",
-            storageBucket: "journalists-c4c17.firebasestorage.app",
-            messagingSenderId: "744548646361",
-            appId: "1:744548646361:web:d45373fd516ed88005edc8",
-            measurementId: "G-MS0GYVPV5F"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // قاعدة البيانات المدمجة مباشرة لضمان العمل بدون مشاكل ملفات خارجية
+        let journalistsData = [
+            { name: "شيرين أبو عاقلة", city: "جنين", institution: "قناة الجزيرة", category: "martyr", details: "صوت فلسطين الأبرز، استشهدت في مخيم جنين أثناء تغطيتها لاقتحام قوات الاحتلال.", image: "" },
+            { name: "أحمد أبو حسين", city: "غزة", institution: "وكالة إعلامية", category: "martyr", details: "صحفي ميداني وثق العدوان بكل شجاعة حتى ارتقى شهيداً في سبيل نقل الحقيقة.", image: "" },
+            { name: "معاذ عمارنة", city: "الخليل", institution: "مصور صحفي", category: "wounded", details: "فقد إحدى عينيه برصاص الاحتلال أثناء عمله الصحفي في محافظة الخليل.", image: "" },
+            { name: "بلال الطويل", city: "نابلس", institution: "شبكة قدس", category: "imprisoned", details: "صحفي معتقل إدارياً في سجون الاحتلال بسبب تغطياته ونشاطه الإعلامي.", image: "" },
+            { name: "إبراهيم تعامرة", city: "بيت لحم", institution: "إعلام حر", category: "wounded", details: "أصيب برصاص غادر أثناء تغطيته للمواجهات.", image: "" },
+            { name: "محمد البريم", city: "غزة", institution: "إذاعة القدس", category: "martyr", details: "استشهد إثر استهداف طائرات الاحتلال.", image: "" },
+            { name: "نضال اشتية", city: "نابلس", institution: "مصور صحفي", category: "wounded", details: "أصيب عدة مرات أثناء تغطيته للمسيرات السلمية في كفر قدوم وبلاطة.", image: "" },
+            { name: "عاصم الشنبلي", city: "رام الله", institution: "تلفزيون فلسطين", category: "imprisoned", details: "اعتقل لفترات طويلة بسبب عمله الصحفي الميداني.", image: "" }
+        ];
 
-        let journalistsData = [];
-        let activePerson = null;
-        let isAdmin = false;
         let currentCategory = 'all';
         let currentCity = 'الكل';
-        let currentYear = 'all';
 
-        function initYearsFilter() {
-            const container = document.getElementById('yearsContainer');
-            const now = new Date().getFullYear();
-            for (let yr = now; yr >= 2000; yr--) {
-                const tag = document.createElement('span');
-                tag.className = 'grid-tag';
-                tag.innerText = yr;
-                tag.onclick = (e) => setYearFilter(yr.toString(), tag);
-                container.appendChild(tag);
-            }
-        }
-        initYearsFilter();
-
-        function triggerAdminLogin() {
-            if (isAdmin) return;
-            const pass = prompt("أدخل كلمة المرور لتفعيل وضع الأدمن:");
-            if (pass === "1234") {
-                isAdmin = true;
-                document.getElementById('adminBar').style.display = 'flex';
-                document.getElementById('adminBadge').style.display = 'inline-block';
-                alert("تم تفعيل وضع الأدمن بنجاح!");
-                renderRecords();
-            } else if(pass !== null) {
-                alert("كلمة المرور غير صحيحة");
-            }
-        }
-
-        db.collection("journalists").onSnapshot((snapshot) => {
-            journalistsData = [];
-            snapshot.forEach((doc) => {
-                journalistsData.push({ id: doc.id, ...doc.data() });
-            });
-            updateStats();
-            renderRecords();
-        });
-
-        function updateStats() {
-            let total = journalistsData.length;
-            let martyrs = 0, imprisoned = 0, wounded = 0;
-
-            journalistsData.forEach(item => {
-                if(item.category === 'martyr') martyrs++;
-                else if(item.category === 'imprisoned') imprisoned++;
-                else if(item.category === 'wounded') wounded++;
-            });
-
-            document.getElementById('statTotal').innerText = total;
-            document.getElementById('statMartyrs').innerText = martyrs;
-            document.getElementById('statImprisoned').innerText = imprisoned;
-            document.getElementById('statWounded').innerText = wounded;
-        }
-
-        function normalizeArabicText(text) {
-            if (!text) return '';
-            return text.toLowerCase().replace(/[أإآآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').trim();
-        }
-
+        // دالة عرض البطاقات الشاملة مع حماية للبيانات
         function renderRecords() {
             const container = document.getElementById('recordsContainer');
             const searchInput = document.getElementById('searchInput');
-            const cleanQuery = normalizeArabicText(searchInput ? searchInput.value : '');
+            const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
             
             container.innerHTML = '';
 
             let filtered = journalistsData.filter(item => {
-                const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
-                const matchesCity = currentCity === 'الكل' || (item.city && item.city === currentCity);
-                const matchesYear = currentYear === 'all' || (item.date && item.date.includes(currentYear));
-                const matchesSearch = cleanQuery === '' || 
-                    normalizeArabicText(item.name).includes(cleanQuery) || 
-                    normalizeArabicText(item.institution).includes(cleanQuery) || 
-                    normalizeArabicText(item.city).includes(cleanQuery);
+                if (!item) return false;
 
-                return matchesCategory && matchesCity && matchesYear && matchesSearch;
+                const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
+                const matchesCity = currentCity === 'الكل' || item.city === currentCity;
+                
+                const name = (item.name || '').toLowerCase();
+                const institution = (item.institution || '').toLowerCase();
+                const city = (item.city || '').toLowerCase();
+
+                const matchesSearch = searchQuery === '' || 
+                    name.includes(searchQuery) || 
+                    institution.includes(searchQuery) || 
+                    city.includes(searchQuery);
+
+                return matchesCategory && matchesCity && matchesSearch;
             });
 
+            // عرض إشعار بالفلتر النشط
+            let noticeText = '';
+            if (currentCity !== 'الكل') noticeText += `المدينة: ${currentCity} `;
+            document.getElementById('activeFilterNotice').innerText = noticeText;
+
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); margin-top:40px; font-size:14px;">لا توجد سجلات مطابقة</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); margin-top:40px; font-size:13px;">لا توجد سجلات مطابقة للبحث أو الفلتر المحدد</div>';
                 return;
             }
 
-            filtered.forEach((person) => {
-                let badgeClass = 'pill-palestinian', labelText = 'صحفي فلسطيني';
-                if(person.category === 'martyr') { badgeClass = 'pill-martyr'; labelText = 'شهيد صحفي'; }
-                else if(person.category === 'imprisoned') { badgeClass = 'pill-imprisoned'; labelText = 'أسير صحفي'; }
-                else if(person.category === 'wounded') { badgeClass = 'pill-wounded'; labelText = 'جريح ومصاب'; }
+            filtered.forEach(person => {
+                let badgeClass = '';
+                let labelText = '';
+                if(person.category === 'martyr') { badgeClass = 'badge-martyr'; labelText = 'شهيد صحفي'; }
+                else if(person.category === 'imprisoned') { badgeClass = 'badge-imprisoned'; labelText = 'أسير صحفي'; }
+                else if(person.category === 'wounded') { badgeClass = 'badge-wounded'; labelText = 'جريح ومصاب'; }
 
-                const wrapper = document.createElement('div');
-                wrapper.className = 'card-3d-wrapper';
-
-                const dateText = (person.category !== 'palestinian' && person.date) ? `<i class="fa-regular fa-calendar-alt"></i> ${person.date}` : '';
-
-                wrapper.innerHTML = `
-                    <div class="card-3d-inner">
-                        <div class="card-front" onclick="openModalById('${person.id}')">
-                            <div class="card-top">
-                                <div class="card-header-left">
-                                    <img src="${person.image || 'https://via.placeholder.com/150'}" alt="${person.name}" class="card-avatar">
-                                    <div class="journalist-info">
-                                        <h3>${person.name || ''}</h3>
-                                        <div class="meta-tags">
-                                            <span><i class="fa-solid fa-building"></i> ${person.institution || ''}</span>
-                                            <span><i class="fa-solid fa-location-dot"></i> ${person.city || 'غير محدد'}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <span class="category-pill ${badgeClass}">${labelText}</span>
-                            </div>
-                            <div class="card-bottom">
-                                <div>${dateText}</div>
-                                <div style="display:flex; gap:8px;">
-                                    ${isAdmin ? `<button onclick="event.stopPropagation(); openFormModal('${person.id}')" style="background:#eab308; color:#000; border:none; padding:4px 8px; border-radius:6px; font-weight:bold; cursor:pointer;">تعديل</button>` : ''}
-                                    <button class="flip-btn" onclick="event.stopPropagation(); flipCard(this)"><i class="fa-solid fa-rotate"></i> قلب البطاقة</button>
-                                </div>
-                            </div>
+                const card = document.createElement('div');
+                card.className = 'journalist-card';
+                card.onclick = () => openModal(person);
+                
+                card.innerHTML = `
+                    <div class="card-top-row">
+                        <div class="journalist-info">
+                            <h3>${person.name}</h3>
+                            <span>${person.institution} - ${person.city}</span>
                         </div>
-
-                        <div class="card-back" onclick="openModalById('${person.id}')">
-                            <div>
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <h4 style="color:var(--accent-cyan); font-size:13px;">${person.name}</h4>
-                                    <span class="category-pill ${badgeClass}">${labelText}</span>
-                                </div>
-                                <p class="back-story-p">${person.details || 'لا توجد تفاصيل إضافية مسجلة.'}</p>
-                            </div>
-                            <div class="card-bottom">
-                                <span style="color:var(--accent-cyan);">انقر للتفاصيل الكاملة والتقرير <i class="fa-solid fa-chevron-left"></i></span>
-                                <button class="flip-btn" onclick="event.stopPropagation(); flipCard(this)"><i class="fa-solid fa-rotate"></i> عودة</button>
-                            </div>
-                        </div>
+                        <span class="category-badge-small ${badgeClass}">${labelText}</span>
                     </div>
+                    <button class="card-action-btn">
+                        <i class="fa-solid fa-book-open"></i> استعراض السيرة والحكاية الكاملة
+                    </button>
                 `;
-                container.appendChild(wrapper);
+                container.appendChild(card);
             });
-        }
-
-        function flipCard(btn) {
-            const wrapper = btn.closest('.card-3d-wrapper');
-            wrapper.classList.toggle('flipped');
-        }
-
-        function openModalById(id) {
-            const person = journalistsData.find(p => p.id === id);
-            if(person) openModal(person);
         }
 
         function openModal(person) {
-            activePerson = person;
-            document.getElementById('modalName').innerText = person.name || '---';
-            document.getElementById('modalCity').innerText = person.city || 'غير محدد';
-            document.getElementById('modalInstitution').innerText = person.institution || 'غير محدد';
-            document.getElementById('modalDate').innerText = person.date || 'غير محدد';
-            document.getElementById('modalDetails').innerText = person.details || '';
-            document.getElementById('modalAvatar').src = person.image || 'https://via.placeholder.com/150';
-
-            const badgeEl = document.getElementById('modalCategoryBadge');
-            const sentenceBox = document.getElementById('modalSentenceBox');
-            const dateBox = document.getElementById('modalDateBox');
-            const storyTitleEl = document.getElementById('modalStoryTitle');
-            const dateLabelEl = document.getElementById('modalDateLabel');
-
-            if(person.category === 'martyr') {
-                badgeEl.className = 'category-pill pill-martyr'; 
-                badgeEl.innerText = 'شهيد صحفي';
-                dateLabelEl.innerText = 'تاريخ الاستشهاد';
-                sentenceBox.style.display = 'none'; 
-                dateBox.style.display = 'block'; 
-                storyTitleEl.innerText = 'التفاصيل والشهادة';
-            } else if(person.category === 'imprisoned') {
-                badgeEl.className = 'category-pill pill-imprisoned'; 
-                badgeEl.innerText = 'أسير صحفي';
-                dateLabelEl.innerText = 'تاريخ الاعتقال';
-                sentenceBox.style.display = 'block'; 
-                dateBox.style.display = 'block';
-                document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد'; 
-                storyTitleEl.innerText = 'التفاصيل والملف القانوني';
-            } else if(person.category === 'wounded') {
-                badgeEl.className = 'category-pill pill-wounded'; 
-                badgeEl.innerText = 'جريح ومصاب';
-                dateLabelEl.innerText = 'تاريخ الإصابة';
-                sentenceBox.style.display = 'none'; 
-                dateBox.style.display = 'block'; 
-                storyTitleEl.innerText = 'التفاصيل وظروف الإصابة';
-            } else {
-                badgeEl.className = 'category-pill pill-palestinian'; 
-                badgeEl.innerText = 'صحفي فلسطيني';
-                dateLabelEl.innerText = 'تاريخ التوثيق';
-                sentenceBox.style.display = 'none'; 
-                dateBox.style.display = 'none'; 
-                storyTitleEl.innerText = 'التفاصيل والسيرة المهنية';
-            }
-
-            document.getElementById('detailModal').classList.add('show');
+            document.getElementById('modalName').innerText = person.name;
+            document.getElementById('modalCity').innerText = `مدينة ${person.city}`;
+            document.getElementById('modalInstitution').innerText = person.institution;
+            document.getElementById('modalDetails').innerText = person.details;
+            document.getElementById('modalImg').src = person.image || 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150';
+            document.getElementById('detailModal').style.display = 'flex';
         }
 
-        function downloadCardImage() {
-            const captureArea = document.getElementById('modalCardCapture');
-            const name = document.getElementById('modalName').innerText;
-            html2canvas(captureArea, { backgroundColor: '#0f172a', useCORS: true, scale: 2 }).then(canvas => {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL("image/png");
-                link.download = `بطاقة_${name}.png`;
-                link.click();
-            });
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
         }
 
-        function downloadPDFReport() {
-            if (!activePerson) return;
-            const captureArea = document.getElementById('modalCardCapture');
-            
-            html2canvas(captureArea, { backgroundColor: '#0f172a', useCORS: true, scale: 2 }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth() - 30;
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                
-                pdf.setFillColor(15, 23, 42);
-                pdf.rect(0, 0, 210, 297, 'F');
-                pdf.addImage(imgData, 'PNG', 15, 20, pdfWidth, pdfHeight);
-                
-                pdf.save(`تقرير_${activePerson.name || 'الصحفي'}.pdf`);
-            });
-        }
-
-        function updateFormDateFieldLabel() {
-            const category = document.getElementById('inputCategory').value;
-            const dateLabel = document.getElementById('inputDateLabel');
-            const dateInput = document.getElementById('inputDate');
-
-            if (category === 'martyr') {
-                dateLabel.innerText = 'تاريخ الاستشهاد:';
-                dateInput.placeholder = 'تاريخ الاستشهاد (مثال: 2023-10-15)';
-            } else if (category === 'imprisoned') {
-                dateLabel.innerText = 'تاريخ الاعتقال:';
-                dateInput.placeholder = 'تاريخ الاعتقال (مثال: 2023-10-15)';
-            } else if (category === 'wounded') {
-                dateLabel.innerText = 'تاريخ الإصابة:';
-                dateInput.placeholder = 'تاريخ الإصابة (مثال: 2023-10-15)';
-            } else {
-                dateLabel.innerText = 'تاريخ التوثيق:';
-                dateInput.placeholder = 'تاريخ التوثيق (مثال: 2023-10-15)';
+        function closeModalOnOutside(event) {
+            if (event.target.id === 'detailModal') {
+                closeModal();
             }
         }
 
-        function openFormModal(id = null) {
-            if(id) {
-                const person = journalistsData.find(p => p.id === id);
-                if(!person) return;
-                document.getElementById('editPersonId').value = person.id;
-                document.getElementById('inputName').value = person.name || '';
-                document.getElementById('inputCategory').value = person.category || 'palestinian';
-                document.getElementById('inputInstitution').value = person.institution || '';
-                document.getElementById('inputCity').value = person.city || '';
-                document.getElementById('inputDate').value = person.date || '';
-                document.getElementById('inputSentence').value = person.sentence || '';
-                document.getElementById('inputDetails').value = person.details || '';
-            } else {
-                document.getElementById('editPersonId').value = '';
-                document.getElementById('inputName').value = '';
-                document.getElementById('inputCategory').value = 'palestinian';
-                document.getElementById('inputInstitution').value = '';
-                document.getElementById('inputCity').value = '';
-                document.getElementById('inputDate').value = '';
-                document.getElementById('inputSentence').value = '';
-                document.getElementById('inputDetails').value = '';
-            }
-            updateFormDateFieldLabel();
-            document.getElementById('formModal').classList.add('show');
-        }
-
-        function closeFormModal() { document.getElementById('formModal').classList.remove('show'); }
-
-        async function savePersonData() {
-            const id = document.getElementById('editPersonId').value;
-            const fileInput = document.getElementById('inputImageFile');
-            
-            let imageUrl = "";
-            if(fileInput.files[0]) {
-                imageUrl = await convertBase64(fileInput.files[0]);
-            }
-
-            const dataObj = {
-                name: document.getElementById('inputName').value,
-                category: document.getElementById('inputCategory').value,
-                institution: document.getElementById('inputInstitution').value,
-                city: document.getElementById('inputCity').value,
-                date: document.getElementById('inputDate').value,
-                sentence: document.getElementById('inputSentence').value,
-                details: document.getElementById('inputDetails').value,
-            };
-
-            if(imageUrl) dataObj.image = imageUrl;
-
-            if(id) {
-                await db.collection("journalists").doc(id).update(dataObj);
-            } else {
-                await db.collection("journalists").add(dataObj);
-            }
-
-            closeFormModal();
-            alert("تم الحفظ بنجاح!");
-        }
-
-        function convertBase64(file) {
-            return new Promise((resolve, reject) => {
-                const fileReader = new FileReader();
-                fileReader.readAsDataURL(file);
-                fileReader.onload = () => resolve(fileReader.result);
-                fileReader.onerror = (error) => reject(error);
-            });
-        }
-
-        function closeModal() { document.getElementById('detailModal').classList.remove('show'); }
-        function closeModalOnOutside(e) { if (e.target.id === 'detailModal') closeModal(); }
-        
         function setCategoryFilter(cat, btn) {
             currentCategory = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
+            if (btn) btn.classList.add('active');
             renderRecords();
         }
+
         function setCityFilter(city, el) {
             currentCity = city;
-            document.querySelectorAll('#citiesContainer .grid-tag').forEach(t => t.classList.remove('active'));
-            if(el) el.classList.add('active');
+            document.querySelectorAll('.city-tag').forEach(t => t.classList.remove('active'));
+            if (el) el.classList.add('active');
+            const menu = document.getElementById('dropdownMenu');
+            if (menu) menu.classList.remove('show');
             renderRecords();
         }
-        function setYearFilter(yr, el) {
-            currentYear = yr;
-            document.querySelectorAll('#yearsContainer .grid-tag').forEach(t => t.classList.remove('active'));
-            if(el) el.classList.add('active');
-            renderRecords();
+
+        // فتح وإغلاق قائمة الثلاث نقاط جهة اليسار
+        function toggleDropdown(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('dropdownMenu');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
         }
-        function toggleDropdown(e) { e.stopPropagation(); document.getElementById('dropdownMenu').classList.toggle('show'); }
+
+        // إغلاق القائمة عند النقر في أي مكان خارجها
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('dropdownMenu');
+            const menuBtn = document.getElementById('menuBtn');
+            if (menu && menu.classList.contains('show')) {
+                if (!menu.contains(event.target) && !menuBtn.contains(event.target)) {
+                    menu.classList.remove('show');
+                }
+            }
+        });
+
+        // تشغيل العرض عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            renderRecords();
+        });
     </script>
 </body>
 </html>
