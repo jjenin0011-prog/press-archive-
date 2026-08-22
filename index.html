@@ -95,7 +95,6 @@
             gap: 12px;
         }
 
-        /* تحسين الشعار البصري واستخدامه كالضغطة السرية للأدمن */
         .logo-icon {
             width: 42px;
             height: 42px;
@@ -119,7 +118,6 @@
             color: #fff;
         }
 
-        /* تحسين مظهر كلمة عين الحقيقة */
         .brand-title-wrapper {
             display: flex;
             flex-direction: column;
@@ -196,7 +194,6 @@
             box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
         }
 
-        /* القائمة المنسدلة */
         .dropdown-menu {
             position: absolute;
             top: 75px;
@@ -281,7 +278,6 @@
         .project-intro h2 { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 6px; }
         .project-intro p { font-size: 12px; color: var(--text-muted); }
 
-        /* العدادات الحية */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -321,7 +317,6 @@
 
         .content-area { flex: 1; padding: 5px 20px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 
-        /* 3D Flip Card Styles */
         .card-3d-wrapper {
             perspective: 1000px;
             width: 100%;
@@ -402,7 +397,6 @@
             margin-top: 6px;
         }
 
-        /* Modal */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(5, 8, 15, 0.85); backdrop-filter: blur(12px);
@@ -450,7 +444,6 @@
         .download-btn { flex: 1; background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan)); color: #fff; border: none; border-radius: 14px; padding: 12px 8px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .pdf-btn { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
 
-        /* Form Modal */
         .form-modal-content input, .form-modal-content select, .form-modal-content textarea {
             background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); color: white; padding: 10px; border-radius: 10px; font-size: 12px; width: 100%; margin-top: 6px;
         }
@@ -568,7 +561,7 @@
                 <div class="modal-info-grid">
                     <div class="info-box"><label>المؤسسة الإعلامية</label><span id="modalInstitution">---</span></div>
                     <div class="info-box"><label>المدينة / الموقع</label><span id="modalCity">---</span></div>
-                    <div class="info-box" id="modalDateBox"><label>تاريخ التوثيق / الاعتقال</label><span id="modalDate">---</span></div>
+                    <div class="info-box" id="modalDateBox"><label id="modalDateLabel">تاريخ التوثيق</label><span id="modalDate">---</span></div>
                     <div class="info-box" id="modalSentenceBox"><label>الحكم القضائي</label><span id="modalSentence" style="color: #facc15;">---</span></div>
                 </div>
 
@@ -596,7 +589,7 @@
             <h3 id="formTitle" style="color: #fff;">إضافة / تعديل صحفي</h3>
             <input type="hidden" id="editPersonId">
             <input type="text" id="inputName" placeholder="الاسم الكامل">
-            <select id="inputCategory">
+            <select id="inputCategory" onchange="updateFormDateFieldLabel()">
                 <option value="palestinian">صحفي فلسطيني</option>
                 <option value="martyr">شهيد</option>
                 <option value="imprisoned">أسير</option>
@@ -604,7 +597,10 @@
             </select>
             <input type="text" id="inputInstitution" placeholder="المؤسسة الإعلامية">
             <input type="text" id="inputCity" placeholder="المدينة (مثال: غزة، جنين)">
+            
+            <label id="inputDateLabel" style="color:#aaa; font-size:11px; margin-top:6px; display:block;">تاريخ التوثيق:</label>
             <input type="text" id="inputDate" placeholder="التاريخ (مثال: 2023-10-15)">
+            
             <input type="text" id="inputSentence" placeholder="الحكم (إن وجد للأسرى)">
             <textarea id="inputDetails" placeholder="التفاصيل والمعلومات"></textarea>
             
@@ -649,7 +645,6 @@
         }
         initYearsFilter();
 
-        // الضغطة السرية عند النقر على الأيقونة الشعار
         function triggerAdminLogin() {
             if (isAdmin) return;
             const pass = prompt("أدخل كلمة المرور لتفعيل وضع الأدمن:");
@@ -796,20 +791,37 @@
             const sentenceBox = document.getElementById('modalSentenceBox');
             const dateBox = document.getElementById('modalDateBox');
             const storyTitleEl = document.getElementById('modalStoryTitle');
+            const dateLabelEl = document.getElementById('modalDateLabel');
 
             if(person.category === 'martyr') {
-                badgeEl.className = 'category-pill pill-martyr'; badgeEl.innerText = 'شهيد صحفي';
-                sentenceBox.style.display = 'none'; dateBox.style.display = 'block'; storyTitleEl.innerText = 'التفاصيل والشهادة';
+                badgeEl.className = 'category-pill pill-martyr'; 
+                badgeEl.innerText = 'شهيد صحفي';
+                dateLabelEl.innerText = 'تاريخ الاستشهاد';
+                sentenceBox.style.display = 'none'; 
+                dateBox.style.display = 'block'; 
+                storyTitleEl.innerText = 'التفاصيل والشهادة';
             } else if(person.category === 'imprisoned') {
-                badgeEl.className = 'category-pill pill-imprisoned'; badgeEl.innerText = 'أسير صحفي';
-                sentenceBox.style.display = 'block'; dateBox.style.display = 'block';
-                document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد'; storyTitleEl.innerText = 'التفاصيل والملف القانوني';
+                badgeEl.className = 'category-pill pill-imprisoned'; 
+                badgeEl.innerText = 'أسير صحفي';
+                dateLabelEl.innerText = 'تاريخ الاعتقال';
+                sentenceBox.style.display = 'block'; 
+                dateBox.style.display = 'block';
+                document.getElementById('modalSentence').innerText = person.sentence || 'غير محدد'; 
+                storyTitleEl.innerText = 'التفاصيل والملف القانوني';
             } else if(person.category === 'wounded') {
-                badgeEl.className = 'category-pill pill-wounded'; badgeEl.innerText = 'جريح ومصاب';
-                sentenceBox.style.display = 'none'; dateBox.style.display = 'block'; storyTitleEl.innerText = 'التفاصيل وظروف الإصابة';
+                badgeEl.className = 'category-pill pill-wounded'; 
+                badgeEl.innerText = 'جريح ومصاب';
+                dateLabelEl.innerText = 'تاريخ الإصابة';
+                sentenceBox.style.display = 'none'; 
+                dateBox.style.display = 'block'; 
+                storyTitleEl.innerText = 'التفاصيل وظروف الإصابة';
             } else {
-                badgeEl.className = 'category-pill pill-palestinian'; badgeEl.innerText = 'صحفي فلسطيني';
-                sentenceBox.style.display = 'none'; dateBox.style.display = 'none'; storyTitleEl.innerText = 'التفاصيل والسيرة المهنية';
+                badgeEl.className = 'category-pill pill-palestinian'; 
+                badgeEl.innerText = 'صحفي فلسطيني';
+                dateLabelEl.innerText = 'تاريخ التوثيق';
+                sentenceBox.style.display = 'none'; 
+                dateBox.style.display = 'none'; 
+                storyTitleEl.innerText = 'التفاصيل والسيرة المهنية';
             }
 
             document.getElementById('detailModal').classList.add('show');
@@ -847,6 +859,26 @@
             });
         }
 
+        function updateFormDateFieldLabel() {
+            const category = document.getElementById('inputCategory').value;
+            const dateLabel = document.getElementById('inputDateLabel');
+            const dateInput = document.getElementById('inputDate');
+
+            if (category === 'martyr') {
+                dateLabel.innerText = 'تاريخ الاستشهاد:';
+                dateInput.placeholder = 'تاريخ الاستشهاد (مثال: 2023-10-15)';
+            } else if (category === 'imprisoned') {
+                dateLabel.innerText = 'تاريخ الاعتقال:';
+                dateInput.placeholder = 'تاريخ الاعتقال (مثال: 2023-10-15)';
+            } else if (category === 'wounded') {
+                dateLabel.innerText = 'تاريخ الإصابة:';
+                dateInput.placeholder = 'تاريخ الإصابة (مثال: 2023-10-15)';
+            } else {
+                dateLabel.innerText = 'تاريخ التوثيق:';
+                dateInput.placeholder = 'تاريخ التوثيق (مثال: 2023-10-15)';
+            }
+        }
+
         function openFormModal(id = null) {
             if(id) {
                 const person = journalistsData.find(p => p.id === id);
@@ -862,12 +894,14 @@
             } else {
                 document.getElementById('editPersonId').value = '';
                 document.getElementById('inputName').value = '';
+                document.getElementById('inputCategory').value = 'palestinian';
                 document.getElementById('inputInstitution').value = '';
                 document.getElementById('inputCity').value = '';
                 document.getElementById('inputDate').value = '';
                 document.getElementById('inputSentence').value = '';
                 document.getElementById('inputDetails').value = '';
             }
+            updateFormDateFieldLabel();
             document.getElementById('formModal').classList.add('show');
         }
 
